@@ -1,9 +1,9 @@
 project:
   type: website
   output-dir: docs
-
+    
 website:
-  title: "Prince Agyapong"
+  title: "Statistical-Analysis"
   navbar:
     left:
       - href: index.qmd
@@ -12,3 +12,10 @@ website:
         text: About
       - href: cardiox_site_reliability.qmd
         text: Site Reliability
+
+format:
+  html:
+    theme:
+      - cosmo
+      - brand
+    css: styles.css

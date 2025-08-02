@@ -16,7 +16,7 @@ Welcome to my portfolio of statistical analysis projects. I specialize in clinic
 
 ## 🧪 Featured Projects
 
-### 🔹 [Site Reliability Analysis in Hypertension Treatment Clinical Trial](docs/cardiox_site_reliability.html)
+### 🔹 [Site Reliability Analysis in Hypertension Treatment Clinical Trial](cardiox_site_reliability.qmd)
 
 ---
 

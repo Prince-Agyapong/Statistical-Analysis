@@ -1,0 +1,126 @@
+---
+title: "STEM Research: Comparing Predictive Models"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+library(haven)
+library(ggplot2)
+library(psych)
+library(knitr)
+library(car)
+library(lavaan)
+library(semTools)
+library(pROC)
+library(semPlot)
+```
+
+## Load and Prepare Data
+
+```{r data-load}
+df <- read_dta("aspires3_survey.dta")
+df[df == 998] <- NA
+
+df$STEM_participation <- ifelse(df$stem_deg %in% c(2,3,4,5,6,7,8), 1, 0)
+
+vars <- c("SCICAP2", "VISIT1", "FAM_SCI", "SCHSCI_ENJY",
+          "SCIID1", "SCIID2", "EPR13", "STEM_participation",
+          "VIEW2", "FJOB12", "APP_RES4")
+df[vars] <- lapply(df[vars], function(x) as.numeric(as.character(x)))
+df$APP_RES4 <- scale(df$APP_RES4)
+df <- na.omit(df[, vars])
+```
+
+## Latent Constructs and SEM
+
+```{r sem-models}
+model_ep_sem <- '
+  ScienceCapital =~ SCICAP2 + VISIT1 + FAM_SCI + SCHSCI_ENJY
+  STEMIdentity =~ SCIID1 + SCIID2 + EPR13
+  EarningPotential =~ VIEW2 + FJOB12 + APP_RES4
+  STEM_participation ~ STEMIdentity + EarningPotential
+'
+fit_ep <- sem(model_ep_sem, data = df, ordered = "STEM_participation", estimator = "WLSMV")
+summary(fit_ep, fit.measures = TRUE, standardized = TRUE, rsquare = TRUE)
+```
+
+## SEM Path Diagram
+
+```{r path-diagram, fig.width=10, fig.height=6}
+semPaths(fit_ep, whatLabels="std", edge.label.cex=0.8, layout="tree", intercepts=FALSE)
+```
+
+## Indirect Effects
+
+```{r indirect-effects}
+parameterEstimates(fit_ep, standardized = TRUE, boot.ci.type = "bca.simple")
+```
+
+## Compare Predictive GLMs
+
+```{r glm-models}
+df$science_capital_mean <- rowMeans(df[, c("SCICAP2", "VISIT1", "FAM_SCI", "SCHSCI_ENJY")])
+df$stem_identity_mean <- rowMeans(df[, c("SCIID1", "SCIID2", "EPR13")])
+df$earning_potential_mean <- rowMeans(df[, c("VIEW2", "FJOB12", "APP_RES4")])
+
+model_sc <- glm(STEM_participation ~ science_capital_mean + stem_identity_mean,
+                data = df, family = binomial)
+model_ep <- glm(STEM_participation ~ earning_potential_mean + stem_identity_mean,
+                data = df, family = binomial)
+```
+
+## AIC, BIC, Pseudo R²
+
+```{r model-comparison}
+comparison <- data.frame(
+  Model = c("Science Capital Model", "Earning Potential Model"),
+  AIC = c(AIC(model_sc), AIC(model_ep)),
+  BIC = c(BIC(model_sc), BIC(model_ep)),
+  Pseudo_R2 = c(1 - model_sc$deviance / model_sc$null.deviance,
+                1 - model_ep$deviance / model_ep$null.deviance)
+)
+kable(comparison)
+```
+
+## Coefficient Tables
+
+```{r coef-tables}
+coefs <- function(mod) {
+  data.frame(
+    Variable = names(coef(mod)),
+    OR = exp(coef(mod)),
+    SE = sqrt(diag(vcov(mod))),
+    z = coef(mod) / sqrt(diag(vcov(mod))),
+    p = coef(summary(mod))[, 4]
+  )
+}
+kable(coefs(model_sc), caption = "Science Capital Model Coefficients")
+kable(coefs(model_ep), caption = "Earning Potential Model Coefficients")
+```
+
+## Effect Size Visualization
+
+```{r effect-sizes}
+coef_df <- rbind(
+  data.frame(Model="Science Capital", Variable=names(coef(model_sc))[-1],
+             OR=exp(coef(model_sc)[-1])),
+  data.frame(Model="Earning Potential", Variable=names(coef(model_ep))[-1],
+             OR=exp(coef(model_ep)[-1]))
+)
+ggplot(coef_df, aes(x=Variable, y=OR, fill=Model)) +
+  geom_bar(stat="identity", position="dodge") +
+  labs(title="Effect Sizes (Odds Ratios)", y="Odds Ratio", x="Predictor") +
+  theme_minimal()
+```
+
+## ROC Curves
+
+```{r roc-plots}
+roc_sc <- roc(df$STEM_participation, predict(model_sc, type="response"))
+roc_ep <- roc(df$STEM_participation, predict(model_ep, type="response"))
+
+plot(roc_sc, col="blue", main="ROC Curves")
+lines(roc_ep, col="red")
+legend("bottomright", legend=c("Science Capital", "Earning Potential"),
+       col=c("blue", "red"), lwd=2)
+```

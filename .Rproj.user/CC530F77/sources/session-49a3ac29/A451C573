@@ -3,7 +3,7 @@
     "path": "~/Library/Mobile Documents/com~apple~CloudDocs/Princes Projects/Git Projects/Statistical-Analysis/cardiox_site_reliability.qmd",
     "project_path": "cardiox_site_reliability.qmd",
     "type": "quarto_markdown",
-    "hash": "0",
+    "hash": "735296271",
     "contents": "",
     "dirty": false,
     "created": 1754101891241.0,
@@ -17,15 +17,15 @@
         "docOutlineVisible": "1",
         "rmdVisualCollapsedChunks": "",
         "rmdVisualModeLocation": "2:0",
-        "cursorPosition": "20,0",
-        "scrollLine": "8"
+        "cursorPosition": "237,0",
+        "scrollLine": "232"
     },
     "folds": "",
-    "lastKnownWriteTime": 1754102089,
+    "lastKnownWriteTime": 1754147242,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1754102089537,
+    "last_content_update": 1754147242525,
     "read_only": false,
     "read_only_alternatives": []
 }

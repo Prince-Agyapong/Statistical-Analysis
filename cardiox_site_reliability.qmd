@@ -54,7 +54,7 @@ site_summary <- df %>%
 site_summary
 ```
 
-Each site was ranked based on its performance across the selected risk factors. Rankings were assigned in descending order, where higher values indicate greater risk. Tied values were given the average of their ranks. The ranking process covered dropout rate, adverse event rate, average systolic blood pressure, average diastolic blood pressure, and average cholesterol level.
+Each site was ranked based on its performance across the selected risk factors. Rankings were assigned in descending order so that sites with better performance (lower risk) received higher rank values, and sites with poorer performance (higher risk) received lower rank values. Tied values were given the average of their ranks. The ranking process was applied separately for dropout rate, adverse event rate, average systolic blood pressure, average diastolic blood pressure, and average cholesterol level.
 
 ```{r}
 # Rank each metric
@@ -235,7 +235,7 @@ density_plots <- rates_dat %>%
 
 **1. Dropout Rate**
 
-Sites classified as high risk tend to have elevated dropout rates compared to medium and low risk sites. This pattern suggests possible engagement or operational issues at those sites, potentially affecting participant retention.
+Sites classified as high risk exhibit higher dropout rates than those categorized as medium or low risk. This trend may reflect challenges related to participant engagement or site operations, potentially impacting retention and overall study quality.
 
 ```{r}
 #| echo: false

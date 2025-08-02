@@ -5,8 +5,6 @@ format:
     toc: false
 ---
 
-# About Me
-
 Hi there! I’m **Prince Agyapong**, a statistician who enjoys turning messy clinical data into clean, meaningful insights that help move science forward.
 
 My journey started with a **Bachelor’s degree in Statistics** from the **University of Ghana**, followed by a **Master’s degree in Statistics** from **South Dakota State University**, where I spent just as much time wrangling R code as I did tutoring students and diving deep into health data.

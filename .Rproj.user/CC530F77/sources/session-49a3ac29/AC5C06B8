@@ -3,7 +3,7 @@
     "path": "~/Library/Mobile Documents/com~apple~CloudDocs/Princes Projects/Git Projects/Statistical-Analysis/index.qmd",
     "project_path": "index.qmd",
     "type": "quarto_markdown",
-    "hash": "4059540379",
+    "hash": "1036217620",
     "contents": "",
     "dirty": false,
     "created": 1754101342112.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "18,104",
-        "scrollLine": "1"
+        "cursorPosition": "20,3",
+        "scrollLine": "2"
     },
     "folds": "",
-    "lastKnownWriteTime": 1754103840,
+    "lastKnownWriteTime": 1754104448,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1754103840726,
+    "last_content_update": 1754104448956,
     "read_only": false,
     "read_only_alternatives": []
 }

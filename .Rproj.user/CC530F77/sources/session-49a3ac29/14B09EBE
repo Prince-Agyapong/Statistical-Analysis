@@ -3,7 +3,7 @@
     "path": "~/Library/Mobile Documents/com~apple~CloudDocs/Princes Projects/Git Projects/Statistical-Analysis/_quarto.yml",
     "project_path": "_quarto.yml",
     "type": "yaml",
-    "hash": "3826484900",
+    "hash": "890046953",
     "contents": "",
     "dirty": false,
     "created": 1754101342360.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "8,23",
+        "cursorPosition": "12,42",
         "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1754103492,
+    "lastKnownWriteTime": 1754104503,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1754103492421,
+    "last_content_update": 1754104503033,
     "read_only": false,
     "read_only_alternatives": []
 }

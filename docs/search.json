@@ -2,9 +2,9 @@
   {
     "objectID": "about.html",
     "href": "about.html",
-    "title": "About",
+    "title": "About Me",
     "section": "",
-    "text": "About this site\n\n1 + 1\n\n[1] 2"
+    "text": "About Me\nHi there! I’m Prince Agyapong, a statistician who enjoys turning messy clinical data into clean, meaningful insights that help move science forward.\nMy journey started with a Bachelor’s degree in Statistics from the University of Ghana, followed by a Master’s degree in Statistics from South Dakota State University — where I spent just as much time wrangling R code as I did tutoring students and diving deep into health data.\nToday, I’m working as a Statistician at Pentara Corporation, where I spend my days reviewing statistical analysis plans, building datasets, and crafting the tables and plots that power regulatory submissions. I love the challenge of working on both early-phase and late-phase clinical trials — especially when I get to run Bayesian simulations or build custom R functions that make reporting faster and cleaner.\nBefore joining industry, I led a meta-analysis exploring how social determinants impact mortality in end-stage kidney disease, and taught college algebra (yes, the part where students either thank you or cry a little).\nIn short: I’m passionate about combining solid statistical methods with good communication and clean code — all to help bring better treatments to the people who need them.\nWant to know more? Check out my projects or find me on LinkedIn."
   },
   {
     "objectID": "cardiox_site_reliability.html",
@@ -18,13 +18,6 @@
     "href": "index.html",
     "title": "Prince Agyapong",
     "section": "",
-    "text": "Welcome to my portfolio of statistical analysis projects. I specialize in clinical trial data and health analytics.\n\n\n\n\n\n\n\n\n\n\nYou can reach me at prince.agyapong@email.com or connect on LinkedIn."
-  },
-  {
-    "objectID": "index.html#contact",
-    "href": "index.html#contact",
-    "title": "Prince Agyapong",
-    "section": "",
-    "text": "You can reach me at prince.agyapong@email.com or connect on LinkedIn."
+    "text": "Welcome to my portfolio of statistical analysis projects. I specialize in clinical trial data and health analytics."
   }
 ]

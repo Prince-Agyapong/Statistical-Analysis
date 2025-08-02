@@ -10,8 +10,8 @@ website:
         text: Home
       - href: about.qmd
         text: About
-      - href: cardiox_site_reliability.qmd
-        text: Site Reliability
+      # - href: cardiox_site_reliability.qmd
+      #   text: Site Reliability
 
 format:
   html:

@@ -1,0 +1,25 @@
+---
+title: "Prince Agyapong"
+format:
+  html:
+    toc: false
+    code-fold: false
+    page-layout: full
+editor: visual
+---
+
+# Welcome
+
+Welcome to my portfolio of statistical analysis projects. I specialize in clinical trial data and health analytics.
+
+---
+
+## 🧪 Featured Projects
+
+### 🔹 [Site Reliability Analysis in Hypertension Treatment Clinical Trial](docs/cardiox_site_reliability.html)
+
+---
+
+## 📬 Contact
+
+You can reach me at [prince.agyapong@email.com](mailto:prince.agyapong@email.com) or connect on [LinkedIn](https://www.linkedin.com/in/prince-agyapong-54b836237/).

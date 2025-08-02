@@ -1,0 +1,3306 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Prince Agyapong">
+<meta name="dcterms.date" content="2025-08-01">
+
+<title>Site Reliability Analysis in Hypertension Treatment Clinical Trial – Prince Agyapong</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-cf3f2c26eef976f46b51aa29f3e196e4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Prince Agyapong</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./cardiox_site_reliability.html" aria-current="page"> 
+<span class="menu-text">Site Reliability</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#analysis" id="toc-analysis" class="nav-link" data-scroll-target="#analysis">Analysis</a></li>
+  <li><a href="#rates-and-ranks" id="toc-rates-and-ranks" class="nav-link" data-scroll-target="#rates-and-ranks">Rates and Ranks</a></li>
+  <li><a href="#k-means-clustering" id="toc-k-means-clustering" class="nav-link" data-scroll-target="#k-means-clustering">K-means Clustering</a></li>
+  <li><a href="#distributional-analysis-of-data-anomalies-using-risk-factors" id="toc-distributional-analysis-of-data-anomalies-using-risk-factors" class="nav-link" data-scroll-target="#distributional-analysis-of-data-anomalies-using-risk-factors">Distributional Analysis of Data Anomalies Using Risk Factors</a></li>
+  <li><a href="#summary-statistics-of-risk-factors" id="toc-summary-statistics-of-risk-factors" class="nav-link" data-scroll-target="#summary-statistics-of-risk-factors">Summary Statistics of Risk Factors</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#recommendations" id="toc-recommendations" class="nav-link" data-scroll-target="#recommendations">Recommendations</a></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Site Reliability Analysis in Hypertension Treatment Clinical Trial</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Prince Agyapong </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">August 1, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level3">
+<h3 class="anchored" data-anchor-id="introduction">Introduction</h3>
+<p>This project explores site-level reliability using a synthetic dataset modeled after a Phase III randomized controlled trial evaluating the efficacy of a hypertension treatment (CardioX) compared to an active comparator and placebo. The dataset includes 1,000 patients enrolled across 50 trial sites, with comprehensive data on demographics, blood pressure, cholesterol levels, dropout rates, and adverse events. The dataset used in this project is publicly available on <a href="https://www.kaggle.com/datasets/isabelladil/phase-iii-clinical-trial-dataset/data">Kaggle</a>.</p>
+</section>
+<section id="analysis" class="level3">
+<h3 class="anchored" data-anchor-id="analysis">Analysis</h3>
+</section>
+<section id="rates-and-ranks" class="level3">
+<h3 class="anchored" data-anchor-id="rates-and-ranks">Rates and Ranks</h3>
+<p>To begin the assessment of site reliability, average rates or values were calculated for each risk factor at every clinical trial site. These included the average dropout rate, adverse event (AE) rate, and average measurements of systolic blood pressure, diastolic blood pressure, and cholesterol level.</p>
+<p>Each site was ranked based on its performance across the selected risk factors. Rankings were assigned in descending order, where higher values indicate greater risk. Tied values were given the average of their ranks. The ranking process covered dropout rate, adverse event rate, average systolic blood pressure, average diastolic blood pressure, and average cholesterol level.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Rank each metric</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>site_ranked <span class="ot">&lt;-</span> site_summary <span class="sc">%&gt;%</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Dropout_Rank =</span> <span class="fu">rank</span>(<span class="sc">-</span>Dropout_Rate, <span class="at">ties.method =</span> <span class="st">"average"</span>, <span class="at">na.last =</span> <span class="st">"keep"</span>),</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">AE_Rank =</span> <span class="fu">rank</span>(<span class="sc">-</span>AE_Rate, <span class="at">ties.method =</span> <span class="st">"average"</span>, <span class="at">na.last =</span> <span class="st">"keep"</span>),</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">Systolic_Rank =</span> <span class="fu">rank</span>(<span class="sc">-</span>Systolic_Mean, <span class="at">ties.method =</span> <span class="st">"average"</span>, <span class="at">na.last =</span> <span class="st">"keep"</span>),</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">Diastolic_Rank =</span> <span class="fu">rank</span>(<span class="sc">-</span>Diastolic_Mean, <span class="at">ties.method =</span> <span class="st">"average"</span>, <span class="at">na.last =</span> <span class="st">"keep"</span>),</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">Cholesterol_Rank =</span> <span class="fu">rank</span>(<span class="sc">-</span>Cholesterol_Mean, <span class="at">ties.method =</span> <span class="st">"average"</span>, <span class="at">na.last =</span> <span class="st">"keep"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to long format</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>rank_long <span class="ot">&lt;-</span> site_ranked <span class="sc">%&gt;%</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Site_ID, <span class="fu">ends_with</span>(<span class="st">"_Rank"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">ends_with</span>(<span class="st">"_Rank"</span>),</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"RF"</span>,</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"Rank_Value"</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">RF =</span> <span class="fu">case_when</span>(</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>      RF <span class="sc">==</span> <span class="st">"Dropout_Rank"</span> <span class="sc">~</span> <span class="st">"Dropout Rate"</span>,</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>      RF <span class="sc">==</span> <span class="st">"AE_Rank"</span> <span class="sc">~</span> <span class="st">"Adverse Event Rate"</span>,</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>      RF <span class="sc">==</span> <span class="st">"Systolic_Rank"</span> <span class="sc">~</span> <span class="st">"Average Systolic BP"</span>,</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>      RF <span class="sc">==</span> <span class="st">"Diastolic_Rank"</span> <span class="sc">~</span> <span class="st">"Average Diastolic BP"</span>,</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>      RF <span class="sc">==</span> <span class="st">"Cholesterol_Rank"</span> <span class="sc">~</span> <span class="st">"Average Cholesterol Level"</span>,</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> RF</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>rank_long</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["Site_ID"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["RF"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Rank_Value"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"Dropout Rate","3":"21.0"},{"1":"1","2":"Adverse Event Rate","3":"40.0"},{"1":"1","2":"Average Systolic BP","3":"19.0"},{"1":"1","2":"Average Diastolic BP","3":"3.0"},{"1":"1","2":"Average Cholesterol Level","3":"43.0"},{"1":"2","2":"Dropout Rate","3":"9.5"},{"1":"2","2":"Adverse Event Rate","3":"25.5"},{"1":"2","2":"Average Systolic BP","3":"43.0"},{"1":"2","2":"Average Diastolic BP","3":"1.0"},{"1":"2","2":"Average Cholesterol Level","3":"44.0"},{"1":"3","2":"Dropout Rate","3":"21.0"},{"1":"3","2":"Adverse Event Rate","3":"31.0"},{"1":"3","2":"Average Systolic BP","3":"47.0"},{"1":"3","2":"Average Diastolic BP","3":"38.0"},{"1":"3","2":"Average Cholesterol Level","3":"46.0"},{"1":"4","2":"Dropout Rate","3":"49.0"},{"1":"4","2":"Adverse Event Rate","3":"9.0"},{"1":"4","2":"Average Systolic BP","3":"1.0"},{"1":"4","2":"Average Diastolic BP","3":"50.0"},{"1":"4","2":"Average Cholesterol Level","3":"12.0"},{"1":"5","2":"Dropout Rate","3":"49.0"},{"1":"5","2":"Adverse Event Rate","3":"8.0"},{"1":"5","2":"Average Systolic BP","3":"5.0"},{"1":"5","2":"Average Diastolic BP","3":"24.0"},{"1":"5","2":"Average Cholesterol Level","3":"18.0"},{"1":"6","2":"Dropout Rate","3":"2.0"},{"1":"6","2":"Adverse Event Rate","3":"48.0"},{"1":"6","2":"Average Systolic BP","3":"44.0"},{"1":"6","2":"Average Diastolic BP","3":"5.0"},{"1":"6","2":"Average Cholesterol Level","3":"49.0"},{"1":"7","2":"Dropout Rate","3":"27.0"},{"1":"7","2":"Adverse Event Rate","3":"7.0"},{"1":"7","2":"Average Systolic BP","3":"2.0"},{"1":"7","2":"Average Diastolic BP","3":"46.0"},{"1":"7","2":"Average Cholesterol Level","3":"39.0"},{"1":"8","2":"Dropout Rate","3":"32.0"},{"1":"8","2":"Adverse Event Rate","3":"21.0"},{"1":"8","2":"Average Systolic BP","3":"22.0"},{"1":"8","2":"Average Diastolic BP","3":"34.0"},{"1":"8","2":"Average Cholesterol Level","3":"8.0"},{"1":"9","2":"Dropout Rate","3":"7.0"},{"1":"9","2":"Adverse Event Rate","3":"3.0"},{"1":"9","2":"Average Systolic BP","3":"29.0"},{"1":"9","2":"Average Diastolic BP","3":"37.0"},{"1":"9","2":"Average Cholesterol Level","3":"42.0"},{"1":"10","2":"Dropout Rate","3":"23.0"},{"1":"10","2":"Adverse Event Rate","3":"12.5"},{"1":"10","2":"Average Systolic BP","3":"24.0"},{"1":"10","2":"Average Diastolic BP","3":"19.0"},{"1":"10","2":"Average Cholesterol Level","3":"2.0"},{"1":"11","2":"Dropout Rate","3":"42.0"},{"1":"11","2":"Adverse Event Rate","3":"25.5"},{"1":"11","2":"Average Systolic BP","3":"38.0"},{"1":"11","2":"Average Diastolic BP","3":"14.0"},{"1":"11","2":"Average Cholesterol Level","3":"50.0"},{"1":"12","2":"Dropout Rate","3":"40.0"},{"1":"12","2":"Adverse Event Rate","3":"50.0"},{"1":"12","2":"Average Systolic BP","3":"50.0"},{"1":"12","2":"Average Diastolic BP","3":"39.0"},{"1":"12","2":"Average Cholesterol Level","3":"14.0"},{"1":"13","2":"Dropout Rate","3":"49.0"},{"1":"13","2":"Adverse Event Rate","3":"1.0"},{"1":"13","2":"Average Systolic BP","3":"10.0"},{"1":"13","2":"Average Diastolic BP","3":"10.0"},{"1":"13","2":"Average Cholesterol Level","3":"20.0"},{"1":"14","2":"Dropout Rate","3":"13.0"},{"1":"14","2":"Adverse Event Rate","3":"32.0"},{"1":"14","2":"Average Systolic BP","3":"17.0"},{"1":"14","2":"Average Diastolic BP","3":"9.0"},{"1":"14","2":"Average Cholesterol Level","3":"1.0"},{"1":"15","2":"Dropout Rate","3":"5.0"},{"1":"15","2":"Adverse Event Rate","3":"46.0"},{"1":"15","2":"Average Systolic BP","3":"4.0"},{"1":"15","2":"Average Diastolic BP","3":"48.0"},{"1":"15","2":"Average Cholesterol Level","3":"13.0"},{"1":"16","2":"Dropout Rate","3":"34.5"},{"1":"16","2":"Adverse Event Rate","3":"42.0"},{"1":"16","2":"Average Systolic BP","3":"9.0"},{"1":"16","2":"Average Diastolic BP","3":"41.0"},{"1":"16","2":"Average Cholesterol Level","3":"7.0"},{"1":"17","2":"Dropout Rate","3":"38.0"},{"1":"17","2":"Adverse Event Rate","3":"49.0"},{"1":"17","2":"Average Systolic BP","3":"48.0"},{"1":"17","2":"Average Diastolic BP","3":"31.0"},{"1":"17","2":"Average Cholesterol Level","3":"32.0"},{"1":"18","2":"Dropout Rate","3":"18.5"},{"1":"18","2":"Adverse Event Rate","3":"16.0"},{"1":"18","2":"Average Systolic BP","3":"11.0"},{"1":"18","2":"Average Diastolic BP","3":"25.0"},{"1":"18","2":"Average Cholesterol Level","3":"26.0"},{"1":"19","2":"Dropout Rate","3":"28.5"},{"1":"19","2":"Adverse Event Rate","3":"33.0"},{"1":"19","2":"Average Systolic BP","3":"31.0"},{"1":"19","2":"Average Diastolic BP","3":"49.0"},{"1":"19","2":"Average Cholesterol Level","3":"37.0"},{"1":"20","2":"Dropout Rate","3":"6.0"},{"1":"20","2":"Adverse Event Rate","3":"10.0"},{"1":"20","2":"Average Systolic BP","3":"13.0"},{"1":"20","2":"Average Diastolic BP","3":"35.0"},{"1":"20","2":"Average Cholesterol Level","3":"15.0"},{"1":"21","2":"Dropout Rate","3":"43.0"},{"1":"21","2":"Adverse Event Rate","3":"5.0"},{"1":"21","2":"Average Systolic BP","3":"39.0"},{"1":"21","2":"Average Diastolic BP","3":"30.0"},{"1":"21","2":"Average Cholesterol Level","3":"35.0"},{"1":"22","2":"Dropout Rate","3":"33.0"},{"1":"22","2":"Adverse Event Rate","3":"11.0"},{"1":"22","2":"Average Systolic BP","3":"49.0"},{"1":"22","2":"Average Diastolic BP","3":"15.0"},{"1":"22","2":"Average Cholesterol Level","3":"21.0"},{"1":"23","2":"Dropout Rate","3":"36.0"},{"1":"23","2":"Adverse Event Rate","3":"36.5"},{"1":"23","2":"Average Systolic BP","3":"18.0"},{"1":"23","2":"Average Diastolic BP","3":"21.0"},{"1":"23","2":"Average Cholesterol Level","3":"9.0"},{"1":"24","2":"Dropout Rate","3":"47.0"},{"1":"24","2":"Adverse Event Rate","3":"17.0"},{"1":"24","2":"Average Systolic BP","3":"14.0"},{"1":"24","2":"Average Diastolic BP","3":"44.0"},{"1":"24","2":"Average Cholesterol Level","3":"19.0"},{"1":"25","2":"Dropout Rate","3":"18.5"},{"1":"25","2":"Adverse Event Rate","3":"44.0"},{"1":"25","2":"Average Systolic BP","3":"32.0"},{"1":"25","2":"Average Diastolic BP","3":"32.0"},{"1":"25","2":"Average Cholesterol Level","3":"47.0"},{"1":"26","2":"Dropout Rate","3":"11.5"},{"1":"26","2":"Adverse Event Rate","3":"28.5"},{"1":"26","2":"Average Systolic BP","3":"6.0"},{"1":"26","2":"Average Diastolic BP","3":"28.0"},{"1":"26","2":"Average Cholesterol Level","3":"45.0"},{"1":"27","2":"Dropout Rate","3":"1.0"},{"1":"27","2":"Adverse Event Rate","3":"4.0"},{"1":"27","2":"Average Systolic BP","3":"45.0"},{"1":"27","2":"Average Diastolic BP","3":"13.0"},{"1":"27","2":"Average Cholesterol Level","3":"38.0"},{"1":"28","2":"Dropout Rate","3":"41.0"},{"1":"28","2":"Adverse Event Rate","3":"20.0"},{"1":"28","2":"Average Systolic BP","3":"41.0"},{"1":"28","2":"Average Diastolic BP","3":"6.0"},{"1":"28","2":"Average Cholesterol Level","3":"4.0"},{"1":"29","2":"Dropout Rate","3":"14.0"},{"1":"29","2":"Adverse Event Rate","3":"47.0"},{"1":"29","2":"Average Systolic BP","3":"26.0"},{"1":"29","2":"Average Diastolic BP","3":"11.0"},{"1":"29","2":"Average Cholesterol Level","3":"29.0"},{"1":"30","2":"Dropout Rate","3":"39.0"},{"1":"30","2":"Adverse Event Rate","3":"14.0"},{"1":"30","2":"Average Systolic BP","3":"35.0"},{"1":"30","2":"Average Diastolic BP","3":"47.0"},{"1":"30","2":"Average Cholesterol Level","3":"25.0"},{"1":"31","2":"Dropout Rate","3":"44.0"},{"1":"31","2":"Adverse Event Rate","3":"36.5"},{"1":"31","2":"Average Systolic BP","3":"42.0"},{"1":"31","2":"Average Diastolic BP","3":"40.0"},{"1":"31","2":"Average Cholesterol Level","3":"5.0"},{"1":"32","2":"Dropout Rate","3":"28.5"},{"1":"32","2":"Adverse Event Rate","3":"12.5"},{"1":"32","2":"Average Systolic BP","3":"37.0"},{"1":"32","2":"Average Diastolic BP","3":"43.0"},{"1":"32","2":"Average Cholesterol Level","3":"24.0"},{"1":"33","2":"Dropout Rate","3":"9.5"},{"1":"33","2":"Adverse Event Rate","3":"35.0"},{"1":"33","2":"Average Systolic BP","3":"12.0"},{"1":"33","2":"Average Diastolic BP","3":"27.0"},{"1":"33","2":"Average Cholesterol Level","3":"30.0"},{"1":"34","2":"Dropout Rate","3":"3.0"},{"1":"34","2":"Adverse Event Rate","3":"41.0"},{"1":"34","2":"Average Systolic BP","3":"34.0"},{"1":"34","2":"Average Diastolic BP","3":"33.0"},{"1":"34","2":"Average Cholesterol Level","3":"23.0"},{"1":"35","2":"Dropout Rate","3":"45.0"},{"1":"35","2":"Adverse Event Rate","3":"25.5"},{"1":"35","2":"Average Systolic BP","3":"46.0"},{"1":"35","2":"Average Diastolic BP","3":"20.0"},{"1":"35","2":"Average Cholesterol Level","3":"41.0"},{"1":"36","2":"Dropout Rate","3":"15.5"},{"1":"36","2":"Adverse Event Rate","3":"25.5"},{"1":"36","2":"Average Systolic BP","3":"21.0"},{"1":"36","2":"Average Diastolic BP","3":"26.0"},{"1":"36","2":"Average Cholesterol Level","3":"36.0"},{"1":"37","2":"Dropout Rate","3":"11.5"},{"1":"37","2":"Adverse Event Rate","3":"18.0"},{"1":"37","2":"Average Systolic BP","3":"20.0"},{"1":"37","2":"Average Diastolic BP","3":"8.0"},{"1":"37","2":"Average Cholesterol Level","3":"33.0"},{"1":"38","2":"Dropout Rate","3":"15.5"},{"1":"38","2":"Adverse Event Rate","3":"45.0"},{"1":"38","2":"Average Systolic BP","3":"28.0"},{"1":"38","2":"Average Diastolic BP","3":"29.0"},{"1":"38","2":"Average Cholesterol Level","3":"6.0"},{"1":"39","2":"Dropout Rate","3":"8.0"},{"1":"39","2":"Adverse Event Rate","3":"15.0"},{"1":"39","2":"Average Systolic BP","3":"3.0"},{"1":"39","2":"Average Diastolic BP","3":"4.0"},{"1":"39","2":"Average Cholesterol Level","3":"34.0"},{"1":"40","2":"Dropout Rate","3":"30.5"},{"1":"40","2":"Adverse Event Rate","3":"38.0"},{"1":"40","2":"Average Systolic BP","3":"7.0"},{"1":"40","2":"Average Diastolic BP","3":"2.0"},{"1":"40","2":"Average Cholesterol Level","3":"11.0"},{"1":"41","2":"Dropout Rate","3":"46.0"},{"1":"41","2":"Adverse Event Rate","3":"39.0"},{"1":"41","2":"Average Systolic BP","3":"36.0"},{"1":"41","2":"Average Diastolic BP","3":"42.0"},{"1":"41","2":"Average Cholesterol Level","3":"40.0"},{"1":"42","2":"Dropout Rate","3":"24.0"},{"1":"42","2":"Adverse Event Rate","3":"19.0"},{"1":"42","2":"Average Systolic BP","3":"8.0"},{"1":"42","2":"Average Diastolic BP","3":"18.0"},{"1":"42","2":"Average Cholesterol Level","3":"22.0"},{"1":"43","2":"Dropout Rate","3":"4.0"},{"1":"43","2":"Adverse Event Rate","3":"6.0"},{"1":"43","2":"Average Systolic BP","3":"25.0"},{"1":"43","2":"Average Diastolic BP","3":"45.0"},{"1":"43","2":"Average Cholesterol Level","3":"10.0"},{"1":"44","2":"Dropout Rate","3":"26.0"},{"1":"44","2":"Adverse Event Rate","3":"34.0"},{"1":"44","2":"Average Systolic BP","3":"33.0"},{"1":"44","2":"Average Diastolic BP","3":"12.0"},{"1":"44","2":"Average Cholesterol Level","3":"3.0"},{"1":"45","2":"Dropout Rate","3":"30.5"},{"1":"45","2":"Adverse Event Rate","3":"23.0"},{"1":"45","2":"Average Systolic BP","3":"23.0"},{"1":"45","2":"Average Diastolic BP","3":"22.0"},{"1":"45","2":"Average Cholesterol Level","3":"17.0"},{"1":"46","2":"Dropout Rate","3":"37.0"},{"1":"46","2":"Adverse Event Rate","3":"22.0"},{"1":"46","2":"Average Systolic BP","3":"15.0"},{"1":"46","2":"Average Diastolic BP","3":"36.0"},{"1":"46","2":"Average Cholesterol Level","3":"16.0"},{"1":"47","2":"Dropout Rate","3":"34.5"},{"1":"47","2":"Adverse Event Rate","3":"28.5"},{"1":"47","2":"Average Systolic BP","3":"40.0"},{"1":"47","2":"Average Diastolic BP","3":"16.0"},{"1":"47","2":"Average Cholesterol Level","3":"27.0"},{"1":"48","2":"Dropout Rate","3":"21.0"},{"1":"48","2":"Adverse Event Rate","3":"2.0"},{"1":"48","2":"Average Systolic BP","3":"30.0"},{"1":"48","2":"Average Diastolic BP","3":"7.0"},{"1":"48","2":"Average Cholesterol Level","3":"48.0"},{"1":"49","2":"Dropout Rate","3":"17.0"},{"1":"49","2":"Adverse Event Rate","3":"30.0"},{"1":"49","2":"Average Systolic BP","3":"27.0"},{"1":"49","2":"Average Diastolic BP","3":"17.0"},{"1":"49","2":"Average Cholesterol Level","3":"28.0"},{"1":"50","2":"Dropout Rate","3":"25.0"},{"1":"50","2":"Adverse Event Rate","3":"43.0"},{"1":"50","2":"Average Systolic BP","3":"16.0"},{"1":"50","2":"Average Diastolic BP","3":"23.0"},{"1":"50","2":"Average Cholesterol Level","3":"31.0"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>An overall rank was calculated for each site by averaging its ranks across all five risk factors. This average rank provides a composite indicator of site performance, allowing for a unified comparison of site-level data quality and reliability.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute average rank per site</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>avg_rank <span class="ot">&lt;-</span> rank_long <span class="sc">%&gt;%</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Site_ID) <span class="sc">%&gt;%</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Rank_Value =</span> <span class="fu">mean</span>(Rank_Value, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>avg_rank</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["Site_ID"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Rank_Value"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"25.2"},{"1":"2","2":"24.6"},{"1":"3","2":"36.6"},{"1":"4","2":"24.2"},{"1":"5","2":"20.8"},{"1":"6","2":"29.6"},{"1":"7","2":"24.2"},{"1":"8","2":"23.4"},{"1":"9","2":"23.6"},{"1":"10","2":"16.1"},{"1":"11","2":"33.9"},{"1":"12","2":"38.6"},{"1":"13","2":"18.0"},{"1":"14","2":"14.4"},{"1":"15","2":"23.2"},{"1":"16","2":"26.7"},{"1":"17","2":"39.6"},{"1":"18","2":"19.3"},{"1":"19","2":"35.7"},{"1":"20","2":"15.8"},{"1":"21","2":"30.4"},{"1":"22","2":"25.8"},{"1":"23","2":"24.1"},{"1":"24","2":"28.2"},{"1":"25","2":"34.7"},{"1":"26","2":"23.8"},{"1":"27","2":"20.2"},{"1":"28","2":"22.4"},{"1":"29","2":"25.4"},{"1":"30","2":"32.0"},{"1":"31","2":"33.5"},{"1":"32","2":"29.0"},{"1":"33","2":"22.7"},{"1":"34","2":"26.8"},{"1":"35","2":"35.5"},{"1":"36","2":"24.8"},{"1":"37","2":"18.1"},{"1":"38","2":"24.7"},{"1":"39","2":"12.8"},{"1":"40","2":"17.7"},{"1":"41","2":"40.6"},{"1":"42","2":"18.2"},{"1":"43","2":"18.0"},{"1":"44","2":"21.6"},{"1":"45","2":"23.1"},{"1":"46","2":"25.2"},{"1":"47","2":"29.2"},{"1":"48","2":"21.6"},{"1":"49","2":"23.8"},{"1":"50","2":"27.6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section>
+<section id="k-means-clustering" class="level3">
+<h3 class="anchored" data-anchor-id="k-means-clustering">K-means Clustering</h3>
+<p>To determine the optimal number of site clusters, the average silhouette width was calculated for K values ranging from 2 to 10. The silhouette method evaluates how well each site fits within its assigned cluster, with higher values indicating better cohesion and separation. The plot showed that <span class="math inline">\(K=3\)</span> yielded the highest average silhouette width, suggesting three distinct clusters best represent the variation in average site ranks.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># K means clustering </span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">117</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to calculate average silhouette width</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>calculate_silhouette <span class="ot">&lt;-</span> <span class="cf">function</span>(k) {</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  kmeans_result <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(avg_rank<span class="sc">$</span>Rank_Value, <span class="at">centers =</span> k, <span class="at">nstart =</span> <span class="dv">10</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  sil <span class="ot">&lt;-</span> <span class="fu">silhouette</span>(kmeans_result<span class="sc">$</span>cluster, <span class="fu">dist</span>(avg_rank<span class="sc">$</span>Rank_Value))</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>(sil[, <span class="st">"sil_width"</span>])</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute silhouette scores for k = 2 to 10</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>k_values <span class="ot">&lt;-</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">10</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>silhouette_scores <span class="ot">&lt;-</span> <span class="fu">sapply</span>(k_values, calculate_silhouette)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a data frame for plotting</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>sil_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">K =</span> k_values,</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">Silhouette =</span> silhouette_scores</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot using ggplot2</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sil_df, <span class="fu">aes</span>(<span class="at">x =</span> K, <span class="at">y =</span> Silhouette)) <span class="sc">+</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Silhouette Plot: Optimal Number of Clusters"</span>,</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Number of Clusters (K)"</span>,</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Average Silhouette Width"</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">10</span>) <span class="sc">+</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="cardiox_site_reliability_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Show Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run k-means</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>kmeans_result <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(avg_rank<span class="sc">$</span>Rank_Value, <span class="at">centers =</span> <span class="dv">3</span>, <span class="at">nstart =</span> <span class="dv">10</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a lookup table for cluster centers and risk labels</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>cluster_labels <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">cluster =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">center =</span> <span class="fu">as.numeric</span>(kmeans_result<span class="sc">$</span>centers)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(center)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">site_risk =</span> <span class="fu">c</span>(<span class="st">"Low"</span>, <span class="st">"Medium"</span>, <span class="st">"High"</span>))</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Attach cluster and site_risk to avg_rank</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>avg_rank <span class="ot">&lt;-</span> avg_rank <span class="sc">%&gt;%</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">cluster =</span> kmeans_result<span class="sc">$</span>cluster) <span class="sc">%&gt;%</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(cluster_labels, <span class="at">by =</span> <span class="st">"cluster"</span>)  </span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(avg_rank, <span class="fu">aes</span>(<span class="at">x =</span> Rank_Value, <span class="at">fill =</span> <span class="fu">factor</span>(site_risk, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Low"</span>, <span class="st">"Medium"</span>, <span class="st">"High"</span>)))) <span class="sc">+</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">2</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">data =</span> cluster_labels, <span class="fu">aes</span>(<span class="at">xintercept =</span> center), </span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>             <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"High"</span> <span class="ot">=</span> <span class="st">"red"</span>, <span class="st">"Medium"</span> <span class="ot">=</span> <span class="st">"blue"</span>, <span class="st">"Low"</span> <span class="ot">=</span> <span class="st">"forestgreen"</span>)) <span class="sc">+</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"K-Means Clustering on Average Rank"</span>,</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Average Rank Value"</span>,</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of Sites"</span>,</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Site Risk"</span>) <span class="sc">+</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Sites were clustered using k-means based on their average rank across risk factors, where higher ranks indicate better site performance. After clustering, risk labels were assigned in descending order of the cluster centers: the cluster with the highest average rank was labeled Low risk, followed by Medium, and the cluster with the lowest average rank labeled High risk.</p>
+<p>Thus, Low-risk sites had the highest average ranks, suggesting consistently favorable performance across the ranked metrics. In contrast, High-risk sites had the lowest average ranks, indicating potential concerns such as underreporting, protocol non-adherence, or other data integrity issues</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="cardiox_site_reliability_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Histogram of average site rankings. Dashed vertical lines indicate k-means cluster centers used to assign site risk levels (Low, Medium, High).</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Show Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>df_with_risk <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(avg_rank <span class="sc">|&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>              <span class="fu">select</span>(Site_ID, site_risk),</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">by =</span> <span class="st">"Site_ID"</span>) </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>rates_dat <span class="ot">&lt;-</span> site_summary <span class="sc">|&gt;</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(avg_rank <span class="sc">|&gt;</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>              <span class="fu">select</span>(site_risk, Site_ID),</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">by =</span> <span class="st">"Site_ID"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">6</span>,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"RF"</span>,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"Value"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">RF =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    RF <span class="sc">==</span> <span class="st">"Dropout_Rate"</span> <span class="sc">~</span> <span class="st">"Dropout Rate"</span>,</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    RF <span class="sc">==</span> <span class="st">"AE_Rate"</span> <span class="sc">~</span> <span class="st">"Adverse Event Rate"</span>,</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    RF <span class="sc">==</span> <span class="st">"Systolic_Mean"</span> <span class="sc">~</span> <span class="st">"Average Systolic BP"</span>,</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    RF <span class="sc">==</span> <span class="st">"Diastolic_Mean"</span> <span class="sc">~</span> <span class="st">"Average Diastolic BP"</span>,</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    RF <span class="sc">==</span> <span class="st">"Cholesterol_Mean"</span> <span class="sc">~</span> <span class="st">"Average Cholesterol Level"</span>,</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> RF</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">|&gt;</span> </span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">site_risk =</span> <span class="fu">factor</span>(site_risk, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Low"</span>, <span class="st">"Medium"</span>, <span class="st">"High"</span>)))</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Density Plots </span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>density_plots <span class="ot">&lt;-</span> rates_dat <span class="sc">%&gt;%</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">split</span>(.<span class="sc">$</span>RF) <span class="sc">%&gt;%</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">ggplot</span>(.x, <span class="fu">aes</span>(<span class="at">x =</span> Value, <span class="at">fill =</span> site_risk)) <span class="sc">+</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">color =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>        <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>          <span class="st">"High"</span> <span class="ot">=</span> <span class="st">"red"</span>, <span class="st">"Medium"</span> <span class="ot">=</span> <span class="st">"blue"</span>, <span class="st">"Low"</span> <span class="ot">=</span> <span class="st">"forestgreen"</span>   </span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>        )) <span class="sc">+</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>        <span class="fu">labs</span>(</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>          <span class="at">x =</span> <span class="fu">unique</span>(.x<span class="sc">$</span>RF),</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>          <span class="at">y =</span> <span class="st">"Density"</span>,</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>          <span class="at">fill =</span> <span class="st">"Site Risk"</span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>        ) <span class="sc">+</span></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme</span>(</span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>          <span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>          <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>          <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>          <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>          <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>          <span class="at">plot.title =</span> <span class="fu">element_blank</span>()</span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>  ) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="distributional-analysis-of-data-anomalies-using-risk-factors" class="level3">
+<h3 class="anchored" data-anchor-id="distributional-analysis-of-data-anomalies-using-risk-factors">Distributional Analysis of Data Anomalies Using Risk Factors</h3>
+<p><strong>1. Dropout Rate</strong></p>
+<p>Sites classified as high risk tend to have elevated dropout rates compared to medium and low risk sites. This pattern suggests possible engagement or operational issues at those sites, potentially affecting participant retention.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="cardiox_site_reliability_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>2. Adverse Event Rate</strong></p>
+<p>Adverse event rates are skewed higher for high risk sites, with some reporting unusually elevated rates. This could point to over-reporting, inconsistent AE definitions, or poor protocol adherence, which are often signs of unreliable data.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="cardiox_site_reliability_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>3. Average Systolic BP</strong></p>
+<p>High-risk sites report higher and more variable average systolic blood pressure levels. Although elevated BP is expected in this population, the degree of variation and inflation at high-risk sites may suggest inadequate blood pressure control, protocol non-adherence, or measurement inconsistencies. In contrast, lower-risk sites show more consistent and moderate readings, suggesting more reliable data capture.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="cardiox_site_reliability_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>4. Average Diastolic BP</strong></p>
+<p>High-risk sites report higher and more variable average diastolic blood pressure readings. This wider spread may indicate inconsistent measurement techniques, protocol deviations, or site-level data quality concerns, similar to the systolic BP findings.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="cardiox_site_reliability_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>5. Average Cholesterol Level</strong></p>
+<p>Cholesterol levels appear elevated and right-shifted at high-risk sites compared to others. This pattern may indicate potential lab calibration issues, data entry errors, or differences in patient selection, such as enrolling individuals with higher baseline cardiovascular risk.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="cardiox_site_reliability_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="summary-statistics-of-risk-factors" class="level3">
+<h3 class="anchored" data-anchor-id="summary-statistics-of-risk-factors">Summary Statistics of Risk Factors</h3>
+<p><strong>High vs Low</strong></p>
+<p>Low-risk sites had significantly higher rank values than high-risk sites for systolic blood pressure (mean difference = 24.83, p &lt; 0.001) and adverse event rate (mean difference = 19.79, p &lt; 0.001). These large and statistically significant differences suggest that low-risk sites are much more consistent in their reporting of expected clinical patterns or completeness. The lower ranks at high-risk sites point to potential underreporting or data quality issues that may compromise the reliability of the information collected at those locations.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create summary tables for  risk factor (RF)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># comparisons across site risk groups: High vs Low, Medium vs Low, High vs Medium</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Risk factors: High vs Low</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>rfs <span class="ot">&lt;-</span> <span class="fu">unique</span>(rfs_data<span class="sc">$</span>RF)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>hl_rfs <span class="ot">&lt;-</span> <span class="fu">map2_dfr</span>(</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  rfs,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">seq_along</span>(rfs),</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(rf, i) {</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    tbl <span class="ot">&lt;-</span> <span class="fu">summary_statistics</span>(</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">dsin =</span> rfs_data <span class="sc">|&gt;</span> </span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        <span class="fu">filter</span>(RF <span class="sc">==</span> rf, site_risk <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"High"</span>, <span class="st">"Low"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">site_risk =</span> <span class="fu">factor</span>(site_risk, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"High"</span>, <span class="st">"Low"</span>))),</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">numvars =</span> <span class="st">"Rank_Value"</span>,</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">by =</span> <span class="st">"RF"</span>,</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">group =</span> <span class="st">"site_risk"</span>,</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">mean_diffs =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">ci_diffs =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">pval_diffs =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">overall =</span> <span class="cn">FALSE</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">RF =</span> <span class="fu">if_else</span>(STAT <span class="sc">==</span> <span class="st">"N"</span>, RF, <span class="st">""</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(VARIABLE, VARTYPE, STATORD))</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (i <span class="sc">&lt;</span> <span class="fu">length</span>(rfs)) {</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>      blank_row <span class="ot">&lt;-</span> tbl[<span class="dv">1</span>, ] <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="sc">~</span> <span class="st">""</span>))</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>      <span class="fu">bind_rows</span>(tbl, blank_row)</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>      tbl</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>hl_rfs <span class="sc">|&gt;</span> </span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">STAT =</span> <span class="st">"Statistic"</span>,</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">RF =</span> <span class="st">"Risk Factor"</span>,</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">Low =</span> <span class="st">"Low Risk"</span>,</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">High =</span> <span class="st">"High Risk"</span></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_caption</span>(<span class="st">"Comparison of Summary Statistics for Low and High Risk Sites"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">opt_table_font</span>(<span class="at">font =</span> <span class="fu">list</span>(gt<span class="sc">::</span><span class="fu">google_font</span>(<span class="st">"Roboto Condensed"</span>), <span class="fu">default_fonts</span>())) <span class="sc">|&gt;</span></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">opt_table_outline</span>() <span class="sc">|&gt;</span></span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">opt_row_striping</span>() <span class="sc">|&gt;</span></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_options</span>(</span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">table.font.size =</span> <span class="fu">px</span>(<span class="dv">14</span>),</span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">data_row.padding =</span> <span class="fu">px</span>(<span class="dv">4</span>),</span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">heading.title.font.size =</span> <span class="fu">px</span>(<span class="dv">16</span>),</span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">column_labels.font.weight =</span> <span class="st">"bold"</span>,</span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">column_labels.background.color =</span> <span class="st">"skyblue"</span></span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="sklmzhpbmw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+#sklmzhpbmw table {
+  font-family: 'Roboto Condensed', system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#sklmzhpbmw thead, #sklmzhpbmw tbody, #sklmzhpbmw tfoot, #sklmzhpbmw tr, #sklmzhpbmw td, #sklmzhpbmw th {
+  border-style: none;
+}
+
+#sklmzhpbmw p {
+  margin: 0;
+  padding: 0;
+}
+
+#sklmzhpbmw .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 14px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 3px;
+  border-top-color: #D3D3D3;
+  border-right-style: solid;
+  border-right-width: 3px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 3px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: solid;
+  border-left-width: 3px;
+  border-left-color: #D3D3D3;
+}
+
+#sklmzhpbmw .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#sklmzhpbmw .gt_title {
+  color: #333333;
+  font-size: 16px;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#sklmzhpbmw .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#sklmzhpbmw .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#sklmzhpbmw .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#sklmzhpbmw .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#sklmzhpbmw .gt_col_heading {
+  color: #333333;
+  background-color: #87CEEB;
+  font-size: 100%;
+  font-weight: bold;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#sklmzhpbmw .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #87CEEB;
+  font-size: 100%;
+  font-weight: bold;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#sklmzhpbmw .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#sklmzhpbmw .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#sklmzhpbmw .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#sklmzhpbmw .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#sklmzhpbmw .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#sklmzhpbmw .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#sklmzhpbmw .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#sklmzhpbmw .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#sklmzhpbmw .gt_row {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#sklmzhpbmw .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#sklmzhpbmw .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#sklmzhpbmw .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#sklmzhpbmw .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#sklmzhpbmw .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#sklmzhpbmw .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#sklmzhpbmw .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#sklmzhpbmw .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#sklmzhpbmw .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#sklmzhpbmw .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#sklmzhpbmw .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#sklmzhpbmw .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#sklmzhpbmw .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#sklmzhpbmw .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#sklmzhpbmw .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#sklmzhpbmw .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#sklmzhpbmw .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#sklmzhpbmw .gt_left {
+  text-align: left;
+}
+
+#sklmzhpbmw .gt_center {
+  text-align: center;
+}
+
+#sklmzhpbmw .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#sklmzhpbmw .gt_font_normal {
+  font-weight: normal;
+}
+
+#sklmzhpbmw .gt_font_bold {
+  font-weight: bold;
+}
+
+#sklmzhpbmw .gt_font_italic {
+  font-style: italic;
+}
+
+#sklmzhpbmw .gt_super {
+  font-size: 65%;
+}
+
+#sklmzhpbmw .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#sklmzhpbmw .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#sklmzhpbmw .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#sklmzhpbmw .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#sklmzhpbmw .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#sklmzhpbmw .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#sklmzhpbmw .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#sklmzhpbmw .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#sklmzhpbmw div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<caption>Comparison of Summary Statistics for Low and High Risk Sites</caption>
+<thead>
+<tr class="gt_col_headings header">
+<th id="RF" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Risk Factor</th>
+<th id="STAT" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Statistic</th>
+<th id="High" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">High Risk</th>
+<th id="Low" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Low Risk</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF">Dropout Rate</td>
+<td class="gt_row gt_left" headers="STAT">N</td>
+<td class="gt_row gt_right" headers="High">12</td>
+<td class="gt_row gt_left" headers="Low">10</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Mean (SD)</td>
+<td class="gt_row gt_right gt_striped" headers="High">19.79 (16.23)</td>
+<td class="gt_row gt_left gt_striped" headers="Low">36.20 (9.98)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Median</td>
+<td class="gt_row gt_right" headers="High">15.75</td>
+<td class="gt_row gt_left" headers="Low">39.50</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">(Q1, Q3)</td>
+<td class="gt_row gt_right gt_striped" headers="High">7.50, 25.62</td>
+<td class="gt_row gt_left gt_striped" headers="Low">30.88, 43.50</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Min, Max</td>
+<td class="gt_row gt_right" headers="High">1.00, 49.00</td>
+<td class="gt_row gt_left" headers="Low">18.50, 46.00</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Mean Difference</td>
+<td class="gt_row gt_right gt_striped" headers="High"></td>
+<td class="gt_row gt_left gt_striped" headers="Low">16.41 (5.90)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">95% CI of Difference</td>
+<td class="gt_row gt_right" headers="High"></td>
+<td class="gt_row gt_left" headers="Low">-28.71, -4.11</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Difference p-value</td>
+<td class="gt_row gt_right gt_striped" headers="High"></td>
+<td class="gt_row gt_left gt_striped" headers="Low">0.012</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT"></td>
+<td class="gt_row gt_right" headers="High"></td>
+<td class="gt_row gt_left" headers="Low"></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF">Adverse Event Rate</td>
+<td class="gt_row gt_left gt_striped" headers="STAT">N</td>
+<td class="gt_row gt_right gt_striped" headers="High">12</td>
+<td class="gt_row gt_left gt_striped" headers="Low">10</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Mean (SD)</td>
+<td class="gt_row gt_right" headers="High">14.96 (10.96)</td>
+<td class="gt_row gt_left" headers="Low">34.75 (11.36)</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Median</td>
+<td class="gt_row gt_right gt_striped" headers="High">13.75</td>
+<td class="gt_row gt_left gt_striped" headers="Low">34.75</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">(Q1, Q3)</td>
+<td class="gt_row gt_right" headers="High">7.50, 18.25</td>
+<td class="gt_row gt_left" headers="Low">26.88, 42.75</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Min, Max</td>
+<td class="gt_row gt_right gt_striped" headers="High">1.00, 38.00</td>
+<td class="gt_row gt_left gt_striped" headers="Low">14.00, 50.00</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Mean Difference</td>
+<td class="gt_row gt_right" headers="High"></td>
+<td class="gt_row gt_left" headers="Low">19.79 (4.77)</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">95% CI of Difference</td>
+<td class="gt_row gt_right gt_striped" headers="High"></td>
+<td class="gt_row gt_left gt_striped" headers="Low">-29.74, -9.84</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Difference p-value</td>
+<td class="gt_row gt_right" headers="High"></td>
+<td class="gt_row gt_left" headers="Low">&lt;0.001</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT"></td>
+<td class="gt_row gt_right gt_striped" headers="High"></td>
+<td class="gt_row gt_left gt_striped" headers="Low"></td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF">Average Systolic BP</td>
+<td class="gt_row gt_left" headers="STAT">N</td>
+<td class="gt_row gt_right" headers="High">12</td>
+<td class="gt_row gt_left" headers="Low">10</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Mean (SD)</td>
+<td class="gt_row gt_right gt_striped" headers="High">15.67 (11.70)</td>
+<td class="gt_row gt_left gt_striped" headers="Low">40.50 (7.00)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Median</td>
+<td class="gt_row gt_right" headers="High">12.00</td>
+<td class="gt_row gt_left" headers="Low">40.00</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">(Q1, Q3)</td>
+<td class="gt_row gt_right gt_striped" headers="High">7.75, 21.00</td>
+<td class="gt_row gt_left gt_striped" headers="Low">35.25, 46.75</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Min, Max</td>
+<td class="gt_row gt_right" headers="High">3.00, 45.00</td>
+<td class="gt_row gt_left" headers="Low">31.00, 50.00</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Mean Difference</td>
+<td class="gt_row gt_right gt_striped" headers="High"></td>
+<td class="gt_row gt_left gt_striped" headers="Low">24.83 (4.22)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">95% CI of Difference</td>
+<td class="gt_row gt_right" headers="High"></td>
+<td class="gt_row gt_left" headers="Low">-33.65, -16.02</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Difference p-value</td>
+<td class="gt_row gt_right gt_striped" headers="High"></td>
+<td class="gt_row gt_left gt_striped" headers="Low">&lt;0.001</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT"></td>
+<td class="gt_row gt_right" headers="High"></td>
+<td class="gt_row gt_left" headers="Low"></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF">Average Diastolic BP</td>
+<td class="gt_row gt_left gt_striped" headers="STAT">N</td>
+<td class="gt_row gt_right gt_striped" headers="High">12</td>
+<td class="gt_row gt_left gt_striped" headers="Low">10</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Mean (SD)</td>
+<td class="gt_row gt_right" headers="High">17.67 (12.88)</td>
+<td class="gt_row gt_left" headers="Low">35.20 (11.20)</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Median</td>
+<td class="gt_row gt_right gt_striped" headers="High">15.50</td>
+<td class="gt_row gt_left gt_striped" headers="Low">38.50</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">(Q1, Q3)</td>
+<td class="gt_row gt_right" headers="High">8.75, 24.25</td>
+<td class="gt_row gt_left" headers="Low">31.25, 41.50</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Min, Max</td>
+<td class="gt_row gt_right gt_striped" headers="High">2.00, 45.00</td>
+<td class="gt_row gt_left gt_striped" headers="Low">14.00, 49.00</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Mean Difference</td>
+<td class="gt_row gt_right" headers="High"></td>
+<td class="gt_row gt_left" headers="Low">17.53 (5.20)</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">95% CI of Difference</td>
+<td class="gt_row gt_right gt_striped" headers="High"></td>
+<td class="gt_row gt_left gt_striped" headers="Low">-28.39, -6.68</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Difference p-value</td>
+<td class="gt_row gt_right" headers="High"></td>
+<td class="gt_row gt_left" headers="Low">0.003</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT"></td>
+<td class="gt_row gt_right gt_striped" headers="High"></td>
+<td class="gt_row gt_left gt_striped" headers="Low"></td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF">Average Cholesterol Level</td>
+<td class="gt_row gt_left" headers="STAT">N</td>
+<td class="gt_row gt_right" headers="High">12</td>
+<td class="gt_row gt_left" headers="Low">10</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Mean (SD)</td>
+<td class="gt_row gt_right gt_striped" headers="High">19.17 (12.12)</td>
+<td class="gt_row gt_left gt_striped" headers="Low">33.70 (14.86)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Median</td>
+<td class="gt_row gt_right" headers="High">19.00</td>
+<td class="gt_row gt_left" headers="Low">38.50</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">(Q1, Q3)</td>
+<td class="gt_row gt_right gt_striped" headers="High">10.75, 27.75</td>
+<td class="gt_row gt_left gt_striped" headers="Low">26.75, 44.75</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Min, Max</td>
+<td class="gt_row gt_right" headers="High">1.00, 38.00</td>
+<td class="gt_row gt_left" headers="Low">5.00, 50.00</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Mean Difference</td>
+<td class="gt_row gt_right gt_striped" headers="High"></td>
+<td class="gt_row gt_left gt_striped" headers="Low">14.53 (5.75)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">95% CI of Difference</td>
+<td class="gt_row gt_right" headers="High"></td>
+<td class="gt_row gt_left" headers="Low">-26.52, -2.54</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Difference p-value</td>
+<td class="gt_row gt_right gt_striped" headers="High"></td>
+<td class="gt_row gt_left gt_striped" headers="Low">0.020</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p><strong>Medium vs Low</strong></p>
+<p>Systolic blood pressure (mean difference = 16.14, p = 0.001) and dropout rate (mean difference = 12.08, p = 0.015) ranked significantly higher at low-risk sites than at medium-risk sites. This indicates that low-risk sites again show greater data completeness or capture clinical variation more accurately. Medium-risk sites may fall somewhere in between, with more plausible values than high-risk sites but still some signs of inconsistency or incompleteness.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Risk factors: Medium vs Low</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>ml_rfs <span class="ot">&lt;-</span> <span class="fu">map2_dfr</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  rfs,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">seq_along</span>(rfs),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(rf, i) {</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    tbl <span class="ot">&lt;-</span> <span class="fu">summary_statistics</span>(</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">dsin =</span> rfs_data <span class="sc">|&gt;</span> </span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="fu">filter</span>(RF <span class="sc">==</span> rf, site_risk <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Medium"</span>, <span class="st">"Low"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">site_risk =</span> <span class="fu">factor</span>(site_risk, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Medium"</span>, <span class="st">"Low"</span>))),</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">numvars =</span> <span class="st">"Rank_Value"</span>,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">by =</span> <span class="st">"RF"</span>,</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">group =</span> <span class="st">"site_risk"</span>,</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">mean_diffs =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">ci_diffs =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">pval_diffs =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">overall =</span> <span class="cn">FALSE</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">RF =</span> <span class="fu">if_else</span>(STAT <span class="sc">==</span> <span class="st">"N"</span>, RF, <span class="st">""</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(VARIABLE, VARTYPE, STATORD))</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (i <span class="sc">&lt;</span> <span class="fu">length</span>(rfs)) {</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>      blank_row <span class="ot">&lt;-</span> tbl[<span class="dv">1</span>, ] <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="sc">~</span> <span class="st">""</span>))</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>      <span class="fu">bind_rows</span>(tbl, blank_row)</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>      tbl</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>ml_rfs <span class="sc">|&gt;</span> </span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">STAT =</span> <span class="st">"Statistic"</span>,</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">RF =</span> <span class="st">"Risk Factor"</span>,</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">Low =</span> <span class="st">"Low Risk"</span>,</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">Medium =</span> <span class="st">"Medium Risk"</span></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_caption</span>(<span class="st">"Comparison of Summary Statistics for Low and Medium Risk Sites"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">opt_table_font</span>(<span class="at">font =</span> <span class="fu">list</span>(gt<span class="sc">::</span><span class="fu">google_font</span>(<span class="st">"Roboto Condensed"</span>), <span class="fu">default_fonts</span>())) <span class="sc">|&gt;</span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">opt_table_outline</span>() <span class="sc">|&gt;</span></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">opt_row_striping</span>() <span class="sc">|&gt;</span></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_options</span>(</span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">table.font.size =</span> <span class="fu">px</span>(<span class="dv">14</span>),</span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">data_row.padding =</span> <span class="fu">px</span>(<span class="dv">4</span>),</span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">heading.title.font.size =</span> <span class="fu">px</span>(<span class="dv">16</span>),</span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">column_labels.font.weight =</span> <span class="st">"bold"</span>,</span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">column_labels.background.color =</span> <span class="st">"skyblue"</span></span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="ayrvmgdgwa" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+#ayrvmgdgwa table {
+  font-family: 'Roboto Condensed', system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#ayrvmgdgwa thead, #ayrvmgdgwa tbody, #ayrvmgdgwa tfoot, #ayrvmgdgwa tr, #ayrvmgdgwa td, #ayrvmgdgwa th {
+  border-style: none;
+}
+
+#ayrvmgdgwa p {
+  margin: 0;
+  padding: 0;
+}
+
+#ayrvmgdgwa .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 14px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 3px;
+  border-top-color: #D3D3D3;
+  border-right-style: solid;
+  border-right-width: 3px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 3px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: solid;
+  border-left-width: 3px;
+  border-left-color: #D3D3D3;
+}
+
+#ayrvmgdgwa .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#ayrvmgdgwa .gt_title {
+  color: #333333;
+  font-size: 16px;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#ayrvmgdgwa .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#ayrvmgdgwa .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ayrvmgdgwa .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ayrvmgdgwa .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ayrvmgdgwa .gt_col_heading {
+  color: #333333;
+  background-color: #87CEEB;
+  font-size: 100%;
+  font-weight: bold;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#ayrvmgdgwa .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #87CEEB;
+  font-size: 100%;
+  font-weight: bold;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#ayrvmgdgwa .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#ayrvmgdgwa .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#ayrvmgdgwa .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#ayrvmgdgwa .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#ayrvmgdgwa .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#ayrvmgdgwa .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#ayrvmgdgwa .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#ayrvmgdgwa .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#ayrvmgdgwa .gt_row {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#ayrvmgdgwa .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ayrvmgdgwa .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#ayrvmgdgwa .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#ayrvmgdgwa .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#ayrvmgdgwa .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ayrvmgdgwa .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#ayrvmgdgwa .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#ayrvmgdgwa .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ayrvmgdgwa .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ayrvmgdgwa .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#ayrvmgdgwa .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ayrvmgdgwa .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#ayrvmgdgwa .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ayrvmgdgwa .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ayrvmgdgwa .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ayrvmgdgwa .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ayrvmgdgwa .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ayrvmgdgwa .gt_left {
+  text-align: left;
+}
+
+#ayrvmgdgwa .gt_center {
+  text-align: center;
+}
+
+#ayrvmgdgwa .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#ayrvmgdgwa .gt_font_normal {
+  font-weight: normal;
+}
+
+#ayrvmgdgwa .gt_font_bold {
+  font-weight: bold;
+}
+
+#ayrvmgdgwa .gt_font_italic {
+  font-style: italic;
+}
+
+#ayrvmgdgwa .gt_super {
+  font-size: 65%;
+}
+
+#ayrvmgdgwa .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#ayrvmgdgwa .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#ayrvmgdgwa .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#ayrvmgdgwa .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#ayrvmgdgwa .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#ayrvmgdgwa .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#ayrvmgdgwa .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#ayrvmgdgwa .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#ayrvmgdgwa div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<caption>Comparison of Summary Statistics for Low and Medium Risk Sites</caption>
+<thead>
+<tr class="gt_col_headings header">
+<th id="RF" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Risk Factor</th>
+<th id="STAT" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Statistic</th>
+<th id="Medium" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Medium Risk</th>
+<th id="Low" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Low Risk</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF">Dropout Rate</td>
+<td class="gt_row gt_left" headers="STAT">N</td>
+<td class="gt_row gt_right" headers="Medium">28</td>
+<td class="gt_row gt_right" headers="Low">10</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Mean (SD)</td>
+<td class="gt_row gt_right gt_striped" headers="Medium">24.12 (13.64)</td>
+<td class="gt_row gt_right gt_striped" headers="Low">36.20 (9.98)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Median</td>
+<td class="gt_row gt_right" headers="Medium">25.50</td>
+<td class="gt_row gt_right" headers="Low">39.50</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">(Q1, Q3)</td>
+<td class="gt_row gt_right gt_striped" headers="Medium">13.38, 34.50</td>
+<td class="gt_row gt_right gt_striped" headers="Low">30.88, 43.50</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Min, Max</td>
+<td class="gt_row gt_right" headers="Medium">2.00, 49.00</td>
+<td class="gt_row gt_right" headers="Low">18.50, 46.00</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Mean Difference</td>
+<td class="gt_row gt_right gt_striped" headers="Medium"></td>
+<td class="gt_row gt_right gt_striped" headers="Low">12.08 (4.72)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">95% CI of Difference</td>
+<td class="gt_row gt_right" headers="Medium"></td>
+<td class="gt_row gt_right" headers="Low">-21.66, -2.49</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Difference p-value</td>
+<td class="gt_row gt_right gt_striped" headers="Medium"></td>
+<td class="gt_row gt_right gt_striped" headers="Low">0.015</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT"></td>
+<td class="gt_row gt_right" headers="Medium"></td>
+<td class="gt_row gt_right" headers="Low"></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF">Adverse Event Rate</td>
+<td class="gt_row gt_left gt_striped" headers="STAT">N</td>
+<td class="gt_row gt_right gt_striped" headers="Medium">28</td>
+<td class="gt_row gt_right gt_striped" headers="Low">10</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Mean (SD)</td>
+<td class="gt_row gt_right" headers="Medium">26.71 (14.52)</td>
+<td class="gt_row gt_right" headers="Low">34.75 (11.36)</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Median</td>
+<td class="gt_row gt_right gt_striped" headers="Medium">27.00</td>
+<td class="gt_row gt_right gt_striped" headers="Low">34.75</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">(Q1, Q3)</td>
+<td class="gt_row gt_right" headers="Medium">15.88, 40.25</td>
+<td class="gt_row gt_right" headers="Low">26.88, 42.75</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Min, Max</td>
+<td class="gt_row gt_right gt_striped" headers="Medium">2.00, 48.00</td>
+<td class="gt_row gt_right gt_striped" headers="Low">14.00, 50.00</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Mean Difference</td>
+<td class="gt_row gt_right" headers="Medium"></td>
+<td class="gt_row gt_right" headers="Low">8.04 (5.08)</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">95% CI of Difference</td>
+<td class="gt_row gt_right gt_striped" headers="Medium"></td>
+<td class="gt_row gt_right gt_striped" headers="Low">-18.34, 2.27</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Difference p-value</td>
+<td class="gt_row gt_right" headers="Medium"></td>
+<td class="gt_row gt_right" headers="Low">0.123</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT"></td>
+<td class="gt_row gt_right gt_striped" headers="Medium"></td>
+<td class="gt_row gt_right gt_striped" headers="Low"></td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF">Average Systolic BP</td>
+<td class="gt_row gt_left" headers="STAT">N</td>
+<td class="gt_row gt_right" headers="Medium">28</td>
+<td class="gt_row gt_right" headers="Low">10</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Mean (SD)</td>
+<td class="gt_row gt_right gt_striped" headers="Medium">24.36 (13.63)</td>
+<td class="gt_row gt_right gt_striped" headers="Low">40.50 (7.00)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Median</td>
+<td class="gt_row gt_right" headers="Medium">24.50</td>
+<td class="gt_row gt_right" headers="Low">40.00</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">(Q1, Q3)</td>
+<td class="gt_row gt_right gt_striped" headers="Medium">14.75, 34.75</td>
+<td class="gt_row gt_right gt_striped" headers="Low">35.25, 46.75</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Min, Max</td>
+<td class="gt_row gt_right" headers="Medium">1.00, 49.00</td>
+<td class="gt_row gt_right" headers="Low">31.00, 50.00</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Mean Difference</td>
+<td class="gt_row gt_right gt_striped" headers="Medium"></td>
+<td class="gt_row gt_right gt_striped" headers="Low">16.14 (4.54)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">95% CI of Difference</td>
+<td class="gt_row gt_right" headers="Medium"></td>
+<td class="gt_row gt_right" headers="Low">-25.34, -6.94</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Difference p-value</td>
+<td class="gt_row gt_right gt_striped" headers="Medium"></td>
+<td class="gt_row gt_right gt_striped" headers="Low">0.001</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT"></td>
+<td class="gt_row gt_right" headers="Medium"></td>
+<td class="gt_row gt_right" headers="Low"></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF">Average Diastolic BP</td>
+<td class="gt_row gt_left gt_striped" headers="STAT">N</td>
+<td class="gt_row gt_right gt_striped" headers="Medium">28</td>
+<td class="gt_row gt_right gt_striped" headers="Low">10</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Mean (SD)</td>
+<td class="gt_row gt_right" headers="Medium">25.39 (14.63)</td>
+<td class="gt_row gt_right" headers="Low">35.20 (11.20)</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Median</td>
+<td class="gt_row gt_right gt_striped" headers="Medium">26.50</td>
+<td class="gt_row gt_right gt_striped" headers="Low">38.50</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">(Q1, Q3)</td>
+<td class="gt_row gt_right" headers="Medium">14.25, 36.25</td>
+<td class="gt_row gt_right" headers="Low">31.25, 41.50</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Min, Max</td>
+<td class="gt_row gt_right gt_striped" headers="Medium">1.00, 50.00</td>
+<td class="gt_row gt_right gt_striped" headers="Low">14.00, 49.00</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Mean Difference</td>
+<td class="gt_row gt_right" headers="Medium"></td>
+<td class="gt_row gt_right" headers="Low">9.81 (5.10)</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">95% CI of Difference</td>
+<td class="gt_row gt_right gt_striped" headers="Medium"></td>
+<td class="gt_row gt_right gt_striped" headers="Low">-20.16, 0.54</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Difference p-value</td>
+<td class="gt_row gt_right" headers="Medium"></td>
+<td class="gt_row gt_right" headers="Low">0.063</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT"></td>
+<td class="gt_row gt_right gt_striped" headers="Medium"></td>
+<td class="gt_row gt_right gt_striped" headers="Low"></td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF">Average Cholesterol Level</td>
+<td class="gt_row gt_left" headers="STAT">N</td>
+<td class="gt_row gt_right" headers="Medium">28</td>
+<td class="gt_row gt_right" headers="Low">10</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Mean (SD)</td>
+<td class="gt_row gt_right gt_striped" headers="Medium">25.29 (14.47)</td>
+<td class="gt_row gt_right gt_striped" headers="Low">33.70 (14.86)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Median</td>
+<td class="gt_row gt_right" headers="Medium">25.50</td>
+<td class="gt_row gt_right" headers="Low">38.50</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">(Q1, Q3)</td>
+<td class="gt_row gt_right gt_striped" headers="Medium">12.75, 36.75</td>
+<td class="gt_row gt_right gt_striped" headers="Low">26.75, 44.75</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Min, Max</td>
+<td class="gt_row gt_right" headers="Medium">3.00, 49.00</td>
+<td class="gt_row gt_right" headers="Low">5.00, 50.00</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Mean Difference</td>
+<td class="gt_row gt_right gt_striped" headers="Medium"></td>
+<td class="gt_row gt_right gt_striped" headers="Low">8.41 (5.37)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">95% CI of Difference</td>
+<td class="gt_row gt_right" headers="Medium"></td>
+<td class="gt_row gt_right" headers="Low">-19.30, 2.47</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Difference p-value</td>
+<td class="gt_row gt_right gt_striped" headers="Medium"></td>
+<td class="gt_row gt_right gt_striped" headers="Low">0.126</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p><strong>Medium vs High</strong></p>
+<p>Adverse event rate had a significant mean difference in ranks between medium-risk and high-risk sites (11.76, p = 0.017), favoring medium-risk sites. Although the differences in systolic and diastolic blood pressure ranks (8.69 and 7.73, respectively) were not statistically significant, they still suggest a trend toward more complete reporting at medium-risk sites compared to high-risk ones.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Risk factors: High vs Medium</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>mh_rfs <span class="ot">&lt;-</span> <span class="fu">map2_dfr</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  rfs,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">seq_along</span>(rfs),</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(rf, i) {</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    tbl <span class="ot">&lt;-</span> <span class="fu">summary_statistics</span>(</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">dsin =</span> rfs_data <span class="sc">|&gt;</span> </span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        <span class="fu">filter</span>(RF <span class="sc">==</span> rf, site_risk <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"High"</span>, <span class="st">"Medium"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">site_risk =</span> <span class="fu">factor</span>(site_risk, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"High"</span>, <span class="st">"Medium"</span>))),</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">numvars =</span> <span class="st">"Rank_Value"</span>,</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">by =</span> <span class="st">"RF"</span>,</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">group =</span> <span class="st">"site_risk"</span>,</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">mean_diffs =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">ci_diffs =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">pval_diffs =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">overall =</span> <span class="cn">FALSE</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">RF =</span> <span class="fu">if_else</span>(STAT <span class="sc">==</span> <span class="st">"N"</span>, RF, <span class="st">""</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(VARIABLE, VARTYPE, STATORD))</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (i <span class="sc">&lt;</span> <span class="fu">length</span>(rfs)) {</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>      blank_row <span class="ot">&lt;-</span> tbl[<span class="dv">1</span>, ] <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="sc">~</span> <span class="st">""</span>))</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>      <span class="fu">bind_rows</span>(tbl, blank_row)</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>      tbl</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>mh_rfs <span class="sc">|&gt;</span></span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">STAT =</span> <span class="st">"Statistic"</span>,</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">RF =</span> <span class="st">"Risk Factor"</span>,</span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">High =</span> <span class="st">"High Risk"</span>,</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">Medium =</span> <span class="st">"Medium Risk"</span></span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_caption</span>(<span class="st">"Comparison of Summary Statistics for Medium and High Risk Sites"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">opt_table_font</span>(<span class="at">font =</span> <span class="fu">list</span>(gt<span class="sc">::</span><span class="fu">google_font</span>(<span class="st">"Roboto Condensed"</span>), <span class="fu">default_fonts</span>())) <span class="sc">|&gt;</span></span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">opt_table_outline</span>() <span class="sc">|&gt;</span></span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">opt_row_striping</span>() <span class="sc">|&gt;</span></span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_options</span>(</span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">table.font.size =</span> <span class="fu">px</span>(<span class="dv">14</span>),</span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">data_row.padding =</span> <span class="fu">px</span>(<span class="dv">4</span>),</span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">heading.title.font.size =</span> <span class="fu">px</span>(<span class="dv">16</span>),</span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">column_labels.font.weight =</span> <span class="st">"bold"</span>,</span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">column_labels.background.color =</span> <span class="st">"skyblue"</span></span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="rtaymawgrw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+#rtaymawgrw table {
+  font-family: 'Roboto Condensed', system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#rtaymawgrw thead, #rtaymawgrw tbody, #rtaymawgrw tfoot, #rtaymawgrw tr, #rtaymawgrw td, #rtaymawgrw th {
+  border-style: none;
+}
+
+#rtaymawgrw p {
+  margin: 0;
+  padding: 0;
+}
+
+#rtaymawgrw .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 14px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 3px;
+  border-top-color: #D3D3D3;
+  border-right-style: solid;
+  border-right-width: 3px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 3px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: solid;
+  border-left-width: 3px;
+  border-left-color: #D3D3D3;
+}
+
+#rtaymawgrw .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#rtaymawgrw .gt_title {
+  color: #333333;
+  font-size: 16px;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#rtaymawgrw .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#rtaymawgrw .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#rtaymawgrw .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#rtaymawgrw .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#rtaymawgrw .gt_col_heading {
+  color: #333333;
+  background-color: #87CEEB;
+  font-size: 100%;
+  font-weight: bold;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#rtaymawgrw .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #87CEEB;
+  font-size: 100%;
+  font-weight: bold;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#rtaymawgrw .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#rtaymawgrw .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#rtaymawgrw .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#rtaymawgrw .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#rtaymawgrw .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#rtaymawgrw .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#rtaymawgrw .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#rtaymawgrw .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#rtaymawgrw .gt_row {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#rtaymawgrw .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#rtaymawgrw .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#rtaymawgrw .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#rtaymawgrw .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#rtaymawgrw .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#rtaymawgrw .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#rtaymawgrw .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#rtaymawgrw .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#rtaymawgrw .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#rtaymawgrw .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#rtaymawgrw .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#rtaymawgrw .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#rtaymawgrw .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#rtaymawgrw .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#rtaymawgrw .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#rtaymawgrw .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#rtaymawgrw .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#rtaymawgrw .gt_left {
+  text-align: left;
+}
+
+#rtaymawgrw .gt_center {
+  text-align: center;
+}
+
+#rtaymawgrw .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#rtaymawgrw .gt_font_normal {
+  font-weight: normal;
+}
+
+#rtaymawgrw .gt_font_bold {
+  font-weight: bold;
+}
+
+#rtaymawgrw .gt_font_italic {
+  font-style: italic;
+}
+
+#rtaymawgrw .gt_super {
+  font-size: 65%;
+}
+
+#rtaymawgrw .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#rtaymawgrw .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#rtaymawgrw .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#rtaymawgrw .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#rtaymawgrw .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#rtaymawgrw .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#rtaymawgrw .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#rtaymawgrw .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#rtaymawgrw div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<caption>Comparison of Summary Statistics for Medium and High Risk Sites</caption>
+<thead>
+<tr class="gt_col_headings header">
+<th id="RF" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Risk Factor</th>
+<th id="STAT" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Statistic</th>
+<th id="High" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">High Risk</th>
+<th id="Medium" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Medium Risk</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF">Dropout Rate</td>
+<td class="gt_row gt_left" headers="STAT">N</td>
+<td class="gt_row gt_right" headers="High">12</td>
+<td class="gt_row gt_right" headers="Medium">28</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Mean (SD)</td>
+<td class="gt_row gt_right gt_striped" headers="High">19.79 (16.23)</td>
+<td class="gt_row gt_right gt_striped" headers="Medium">24.12 (13.64)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Median</td>
+<td class="gt_row gt_right" headers="High">15.75</td>
+<td class="gt_row gt_right" headers="Medium">25.50</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">(Q1, Q3)</td>
+<td class="gt_row gt_right gt_striped" headers="High">7.50, 25.62</td>
+<td class="gt_row gt_right gt_striped" headers="Medium">13.38, 34.50</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Min, Max</td>
+<td class="gt_row gt_right" headers="High">1.00, 49.00</td>
+<td class="gt_row gt_right" headers="Medium">2.00, 49.00</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Mean Difference</td>
+<td class="gt_row gt_right gt_striped" headers="High"></td>
+<td class="gt_row gt_right gt_striped" headers="Medium">4.33 (4.98)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">95% CI of Difference</td>
+<td class="gt_row gt_right" headers="High"></td>
+<td class="gt_row gt_right" headers="Medium">-14.42, 5.75</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Difference p-value</td>
+<td class="gt_row gt_right gt_striped" headers="High"></td>
+<td class="gt_row gt_right gt_striped" headers="Medium">0.390</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT"></td>
+<td class="gt_row gt_right" headers="High"></td>
+<td class="gt_row gt_right" headers="Medium"></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF">Adverse Event Rate</td>
+<td class="gt_row gt_left gt_striped" headers="STAT">N</td>
+<td class="gt_row gt_right gt_striped" headers="High">12</td>
+<td class="gt_row gt_right gt_striped" headers="Medium">28</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Mean (SD)</td>
+<td class="gt_row gt_right" headers="High">14.96 (10.96)</td>
+<td class="gt_row gt_right" headers="Medium">26.71 (14.52)</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Median</td>
+<td class="gt_row gt_right gt_striped" headers="High">13.75</td>
+<td class="gt_row gt_right gt_striped" headers="Medium">27.00</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">(Q1, Q3)</td>
+<td class="gt_row gt_right" headers="High">7.50, 18.25</td>
+<td class="gt_row gt_right" headers="Medium">15.88, 40.25</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Min, Max</td>
+<td class="gt_row gt_right gt_striped" headers="High">1.00, 38.00</td>
+<td class="gt_row gt_right gt_striped" headers="Medium">2.00, 48.00</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Mean Difference</td>
+<td class="gt_row gt_right" headers="High"></td>
+<td class="gt_row gt_right" headers="Medium">11.76 (4.69)</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">95% CI of Difference</td>
+<td class="gt_row gt_right gt_striped" headers="High"></td>
+<td class="gt_row gt_right gt_striped" headers="Medium">-21.25, -2.27</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Difference p-value</td>
+<td class="gt_row gt_right" headers="High"></td>
+<td class="gt_row gt_right" headers="Medium">0.017</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT"></td>
+<td class="gt_row gt_right gt_striped" headers="High"></td>
+<td class="gt_row gt_right gt_striped" headers="Medium"></td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF">Average Systolic BP</td>
+<td class="gt_row gt_left" headers="STAT">N</td>
+<td class="gt_row gt_right" headers="High">12</td>
+<td class="gt_row gt_right" headers="Medium">28</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Mean (SD)</td>
+<td class="gt_row gt_right gt_striped" headers="High">15.67 (11.70)</td>
+<td class="gt_row gt_right gt_striped" headers="Medium">24.36 (13.63)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Median</td>
+<td class="gt_row gt_right" headers="High">12.00</td>
+<td class="gt_row gt_right" headers="Medium">24.50</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">(Q1, Q3)</td>
+<td class="gt_row gt_right gt_striped" headers="High">7.75, 21.00</td>
+<td class="gt_row gt_right gt_striped" headers="Medium">14.75, 34.75</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Min, Max</td>
+<td class="gt_row gt_right" headers="High">3.00, 45.00</td>
+<td class="gt_row gt_right" headers="Medium">1.00, 49.00</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Mean Difference</td>
+<td class="gt_row gt_right gt_striped" headers="High"></td>
+<td class="gt_row gt_right gt_striped" headers="Medium">8.69 (4.52)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">95% CI of Difference</td>
+<td class="gt_row gt_right" headers="High"></td>
+<td class="gt_row gt_right" headers="Medium">-17.84, 0.46</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Difference p-value</td>
+<td class="gt_row gt_right gt_striped" headers="High"></td>
+<td class="gt_row gt_right gt_striped" headers="Medium">0.062</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT"></td>
+<td class="gt_row gt_right" headers="High"></td>
+<td class="gt_row gt_right" headers="Medium"></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF">Average Diastolic BP</td>
+<td class="gt_row gt_left gt_striped" headers="STAT">N</td>
+<td class="gt_row gt_right gt_striped" headers="High">12</td>
+<td class="gt_row gt_right gt_striped" headers="Medium">28</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Mean (SD)</td>
+<td class="gt_row gt_right" headers="High">17.67 (12.88)</td>
+<td class="gt_row gt_right" headers="Medium">25.39 (14.63)</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Median</td>
+<td class="gt_row gt_right gt_striped" headers="High">15.50</td>
+<td class="gt_row gt_right gt_striped" headers="Medium">26.50</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">(Q1, Q3)</td>
+<td class="gt_row gt_right" headers="High">8.75, 24.25</td>
+<td class="gt_row gt_right" headers="Medium">14.25, 36.25</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Min, Max</td>
+<td class="gt_row gt_right gt_striped" headers="High">2.00, 45.00</td>
+<td class="gt_row gt_right gt_striped" headers="Medium">1.00, 50.00</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Mean Difference</td>
+<td class="gt_row gt_right" headers="High"></td>
+<td class="gt_row gt_right" headers="Medium">7.73 (4.88)</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">95% CI of Difference</td>
+<td class="gt_row gt_right gt_striped" headers="High"></td>
+<td class="gt_row gt_right gt_striped" headers="Medium">-17.61, 2.16</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Difference p-value</td>
+<td class="gt_row gt_right" headers="High"></td>
+<td class="gt_row gt_right" headers="Medium">0.122</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT"></td>
+<td class="gt_row gt_right gt_striped" headers="High"></td>
+<td class="gt_row gt_right gt_striped" headers="Medium"></td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF">Average Cholesterol Level</td>
+<td class="gt_row gt_left" headers="STAT">N</td>
+<td class="gt_row gt_right" headers="High">12</td>
+<td class="gt_row gt_right" headers="Medium">28</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Mean (SD)</td>
+<td class="gt_row gt_right gt_striped" headers="High">19.17 (12.12)</td>
+<td class="gt_row gt_right gt_striped" headers="Medium">25.29 (14.47)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Median</td>
+<td class="gt_row gt_right" headers="High">19.00</td>
+<td class="gt_row gt_right" headers="Medium">25.50</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">(Q1, Q3)</td>
+<td class="gt_row gt_right gt_striped" headers="High">10.75, 27.75</td>
+<td class="gt_row gt_right gt_striped" headers="Medium">12.75, 36.75</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">Min, Max</td>
+<td class="gt_row gt_right" headers="High">1.00, 38.00</td>
+<td class="gt_row gt_right" headers="Medium">3.00, 49.00</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Mean Difference</td>
+<td class="gt_row gt_right gt_striped" headers="High"></td>
+<td class="gt_row gt_right gt_striped" headers="Medium">6.12 (4.77)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="RF"></td>
+<td class="gt_row gt_left" headers="STAT">95% CI of Difference</td>
+<td class="gt_row gt_right" headers="High"></td>
+<td class="gt_row gt_right" headers="Medium">-15.78, 3.54</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="RF"></td>
+<td class="gt_row gt_left gt_striped" headers="STAT">Difference p-value</td>
+<td class="gt_row gt_right gt_striped" headers="High"></td>
+<td class="gt_row gt_right gt_striped" headers="Medium">0.208</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="conclusion" class="level3">
+<h3 class="anchored" data-anchor-id="conclusion">Conclusion</h3>
+<p>The rank-based analysis demonstrates that low-risk sites consistently outperformed others in terms of data quality, achieving notably higher ranks across key clinical metrics. Medium-risk sites also performed better than high-risk sites, especially in the reporting of adverse events. These findings support the validity of the site classification and suggest that high-risk sites may be affected by protocol deviations, underreporting, or other operational issues that compromise data reliability.</p>
+</section>
+<section id="recommendations" class="level3">
+<h3 class="anchored" data-anchor-id="recommendations">Recommendations</h3>
+<ul>
+<li><strong>Targeted monitoring</strong> should be considered for high-risk sites to investigate possible causes of poor data quality.</li>
+<li><strong>Site retraining or audits</strong> may help reinforce protocol adherence and improve reporting accuracy.</li>
+<li><strong>Continuous rank-based surveillance</strong> can be incorporated into risk-based monitoring workflows to proactively flag emerging issues.</li>
+<li><strong>Further investigation</strong> into operational challenges at high-risk sites may offer insights to prevent similar issues in future trials.</li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            // default icon
+            link.classList.add("external");
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<script src="site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

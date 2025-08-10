@@ -1,0 +1,604 @@
+---
+title: "Feature Selection and Pathways to Diagnosing Erythemato-Squamous Diseases"
+author: "Prince Agyapong"
+date: today
+format:  
+  html:   
+    theme: yeti  
+    toc: true 
+    toc-depth: 4
+    toc-location: left
+    number-sections: false
+    code-fold: true
+    code-summary: "Show Code"
+    df-print: paged
+    smooth-scroll: true
+    link-external-icon: true
+    link-external-newwindow: true
+editor: visual
+---
+
+# Introduction
+
+Distinguishing between erythemato-squamous diseases presents a challenge in dermatology. These conditions often share overlapping symptoms such as erythema and scaling, making clinical differentiation difficult. The group includes psoriasis, seborrheic dermatitis, lichen planus, pityriasis rosea, chronic dermatitis, and pityriasis rubra pilaris. While biopsies are frequently used to aid diagnosis, the histopathological characteristics of these diseases are also highly similar. The challenge is further compounded by the fact that, in early stages, one disease may resemble another before its defining features emerge.
+
+In this project, patients are assessed on 12 clinical variables and 22 histopathological features obtained through microscopic examination. The objective is to explore these features using statistical and machine learning methods to identify the most informative predictors, improve classification accuracy, and gain insights into distinguishing characteristics of each condition.
+
+
+# Analysis
+```{r,  warning=FALSE, message=FALSE}
+#| label: load-packages
+#| include: false
+# Load required packages
+if (!require("pacman")) install.packages("pacman")  # Install pacman if missing
+pacman::p_load(
+  ucimlrepo,   # Access datasets from the UCI Machine Learning Repository
+  naniar,      # Handle and visualize missing data
+  missForest,  # Impute missing values using random forest
+  randomForest,# Fit random forest models
+  ranger,      # Fast implementation of random forest
+  ggplot2,     # Create plots and visualizations
+  dplyr,       # Data manipulation and transformation
+  caret,       # Machine learning workflows, train/test split, preprocessing
+  partykit,    # Create and work with tree-based models
+  ggparty,     # Visualize decision trees with ggplot2
+  patchwork,   # Combine multiple ggplot2 plots
+  pROC,        # Compute ROC curves and AUC
+  purrr,        # Functional programming, iterate over lists/vectors
+  janitor,
+  stringr,
+  tibble,
+  gt,
+  tidyr
+)
+
+```
+
+## Data
+
+This project uses data on erythemato-squamous diseases sourced from the UCI Machine Learning Repository.  
+The dataset contains 366 patient records with 34 features:
+
+- Clinical features (12 variables) – Recorded during the patient’s initial examination.  
+- Histopathological features (22 variables) – Obtained from biopsy samples examined under a microscope.  
+
+Of the 34 attributes, 33 are numeric (integer-valued) and 1 is categorical (the disease class).  
+The six disease classes are:
+
+1. Psoriasis  
+2. Seborrheic Dermatitis  
+3. Lichen Planus  
+4. Pityriasis Rosea  
+5. Chronic Dermatitis  
+6. Pityriasis Rubra Pilaris  
+
+The dataset combines both observable symptoms and microscopic tissue characteristics, making it suitable for exploring feature importance and developing pathways for diagnosis without immediate reliance on invasive biopsies.
+```{r}
+
+set.seed(123)
+data <- fetch_ucirepo(id = 33)
+data <- data$data$original |>
+  mutate(
+    class = factor(class),
+    class_names = recode_factor(
+      class,
+      `1` = "Psoriasis",
+      `2` = "Seboreic Dermatitis",
+      `3` = "Lichen Planus",
+      `4` = "Pityriasis Rosea",
+      `5` = "Cronic Dermatitis",
+      `6` = "Pityriasis Rubra Pilaris"
+    )
+  )
+
+data
+```
+
+### Missing Values 
+Inspection of the dataset revealed that only the `age` feature contains missing values**.  
+All other clinical and histopathological features are complete.  
+
+The missing values in `age` will be addressed using the `missForest` imputation method.
+```{r}
+gg_miss_var(data |>
+              select(-class_names)) +
+  labs(title = "Missing Values per Feature", x = "Feature", y = "Number Missing")
+```
+
+### Class Distribution
+The dataset contains six types of erythemato-squamous diseases, with the number of cases varying considerably between classes. Psoriasis is the most represented class (112 cases), followed by Lichen Planus (72 cases) and Seboreic Dermatitis (61 cases). Pityriasis Rosea (49 cases) and Cronic Dermatitis (52 cases) have moderate representation, while Pityriasis Rubra Pilaris is the least common with only 20 cases. The imbalance in class sizes is important to consider when building classification models, as it may affect predictive performance.
+
+```{r, fig.width=12, fig.height=12*9/16}
+cls_cols <- c("#F8766D", "#00BA38", "#619CFF", "#E76BF3", "#FFD700", "#00C2A0")
+
+ggplot(data, aes(x = class_names, fill = class_names)) +
+  geom_bar(show.legend = FALSE) +
+  scale_fill_manual(values = cls_cols) +
+  geom_text(stat = 'count', aes(label = after_stat(count)), 
+            vjust = -0.5,
+            size = 4.5,
+            fontface = "bold") +
+  labs(title = "Class Distribution", x = "Disease Class", y = "Count") +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(size = 14, face = "bold"),
+    plot.subtitle = element_text(size = 14, face = "bold"),
+    legend.text = element_text(size = 12),
+    axis.text = element_text(size = 12, face = "bold"),
+    axis.title = element_text(size = 14, face = "bold")
+  )
+```
+
+### Age Distribution Across Disease Classes
+
+The plot below illustrates the distribution of patient ages across the six erythemato-squamous disease classes. Examining age differences helps assess whether it may serve as a discriminative feature in the classification task. If certain diseases tend to occur predominantly in specific age ranges, age could provide additional predictive value for diagnosis.
+
+Age varies across the six erythemato-squamous disease classes.  
+Most diseases affect a wide range of ages, while *Pityriasis Rubra Pilaris* is concentrated in younger patients (mostly under 15 years). This suggests age could be a strong distinguishing factor for this class.
+
+```{r, fig.width=12, fig.height=12*9/16, warning=FALSE, message=FALSE}
+ggplot(data, aes(x = class_names, y = age, fill = class)) +
+  geom_boxplot(show.legend = FALSE) +
+  labs(title = "Age Distribution by Disease Class", x = "Disease Class", y = "Age") +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(size = 14, face = "bold"),
+    plot.subtitle = element_text(size = 14, face = "bold"),
+    legend.text = element_text(size = 12),
+    axis.text = element_text(size = 12, face = "bold"),
+    axis.title = element_text(size = 14, face = "bold")
+  )
+
+```
+
+### Between‑class variance (η²) screening
+
+η² (eta‑squared) from a one‑way ANOVA estimates the share of a feature’s total variance that’s explained by disease class (range 0–1). Higher η² implies stronger separation across classes which also means more likely to be discriminative. Below, features with η² ≥ 0.70 are highlighted.
+
+```{r, fig.width=10, fig.height=12*9/16}
+# helper: eta-squared for one-way ANOVA
+eta2_oneway <- function(x, g) {
+  ok <- stats::complete.cases(x, g)
+  x <- x[ok]; g <- droplevels(g[ok])
+  if (length(unique(g)) < 2L || length(x) < 3L) return(NA_real_)
+  fit <- stats::aov(x ~ g)
+  ss  <- anova(fit)[["Sum Sq"]]
+  as.numeric(ss[1] / sum(ss))  # between / total = η²
+}
+
+# compute η² per feature (exclude class columns)
+feat_names <- setdiff(names(data), c("class", "class_names"))
+
+rank_tbl <- tibble(
+  Feature = feat_names,
+  eta2  = map_dbl(feat_names, ~ eta2_oneway(data[[.x]], data$class))
+) |> arrange(desc(eta2))
+
+# keep strong separators
+top_eta <- filter(rank_tbl, eta2 >= 0.70)
+
+ggplot(top_eta, aes(x = reorder(Feature, eta2), y = eta2)) +
+  geom_col(fill = "forestgreen") +
+  coord_flip() +
+  labs(
+    title = "Proportion of variance explained by disease class (0–1)",
+    x = "Feature", y = "\u03B7\u00B2"
+  ) +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(size = 14, face = "bold"),
+    plot.subtitle = element_text(size = 14, face = "bold"),
+    legend.text = element_text(size = 12),
+    axis.text = element_text(size = 12, face = "bold"),
+    axis.title = element_text(size = 14, face = "bold")
+  )
+```
+
+## Modelling
+### Train/test split and missing‑data handling
+
+Records are first split into an 80/20 train/test partition stratified by class.  
+Missing values are then imputed with **`missForest`**, a nonparametric random‑forest imputer that handles mixed data types and nonlinear relations. To avoid information leakage, imputation is performed separately for the training and test portions: the training set is imputed on its own; the test set is imputed using a model fitted only on the training distribution by concatenating the features (without the class label), imputing jointly, and then re‑attaching the original test labels. This preserves realistic model evaluation while retaining all rows.
+
+```{r}
+# Data prep & imputation
+mod_data <- data |>
+  mutate(class = factor(class),
+         age = as.numeric(age)) |>
+  clean_names() |>
+  select(-class_names)
+
+idx <- createDataPartition(mod_data$class, p = 0.8, list = FALSE)
+train_data <- mod_data[idx, ]
+test_data  <- mod_data[-idx, ]
+```
+
+**Imputed Training Data**
+```{r}
+# Impute training
+train_imp <- missForest(train_data)$ximp
+train_imp
+```
+
+**Imputed Test Data**
+```{r}
+# Impute test
+tmp <- bind_rows(train_data |> select(-matches("class")),
+                 test_data |> select(-matches("class")))
+tmp_imp <- missForest(tmp)$ximp
+
+test_imp <- cbind(tmp_imp[(nrow(train_data)+1):nrow(tmp_imp), ], class = test_data$class)
+test_imp
+```
+
+### Random Forest Feature Importance
+
+Two complementary measures of feature importance are obtained from Random Forest models trained on the imputed training data (`500` trees; `mtry = √p`).  
+In each case, only the top 15 features are shown for clarity.
+
+1. **Gini impurity importance** – quantifies the average decrease in node impurity (Gini index) contributed by each feature across all splits. Larger values indicate stronger discriminatory power in separating classes.
+
+2. **Permutation (accuracy reduction) importance** – measures the drop in predictive accuracy when a feature’s values are randomly permuted. Larger values indicate a greater loss in model performance, capturing the predictive impact rather than split purity.
+
+Together, these metrics provide a more complete view of how features contribute to classification:  
+- **Gini impurity** captures how often and effectively a feature is used in tree splits.  
+- **Permutation importance** captures the real performance penalty if the feature’s information is destroyed.
+
+```{r}
+# Random Forest (Gini impurity)
+rf_gini <- randomForest(
+  class ~ ., data = train_imp,
+  ntree = 500,
+  mtry = floor(sqrt(ncol(train_imp) - 1)),
+  importance = TRUE
+)
+
+imp_gini <- as.data.frame(randomForest::importance(rf_gini)) |>
+  rownames_to_column("Feature") |>
+  arrange(desc(MeanDecreaseGini)) |>
+  mutate(Method = "Gini Impurity")
+
+# Random Forest (Permutation importance)
+rf_perm <- ranger(
+  class ~ ., data = train_imp,
+  num.trees = 500,
+  mtry = floor(sqrt(ncol(train_imp) - 1)),
+  importance = "permutation",
+  probability = TRUE
+)
+
+imp_perm <- as.data.frame(rf_perm$variable.importance) |>
+  rownames_to_column("Feature") |>
+  rename(Importance = 2) |>
+  arrange(desc(Importance)) |>
+  mutate(Method = "Accuracy Reduction")
+
+# Combine & plot
+imp_gini <- imp_gini |>
+  rename(Importance = MeanDecreaseGini)
+
+
+
+# Gini impurity plot
+p1 <- ggplot(imp_gini |> 
+               slice(1:15) |>
+               mutate(Feature = str_replace_all(Feature, "_", " ")), 
+             aes(x = reorder(Feature, Importance), y = Importance, fill = Method)) +
+  geom_col(show.legend = FALSE,
+           color = "black", fill = "tomato") +
+  coord_flip() +
+  labs(title = "(a) Gini Impurity",
+       x = "Feature", y = "Importance") +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(size = 14, face = "bold"),
+    plot.subtitle = element_text(size = 14, face = "bold"),
+    legend.text = element_text(size = 12),
+    axis.text = element_text(size = 12, face = "bold"),
+    axis.title = element_text(size = 14, face = "bold")
+  )
+
+# Accuracy reduction plot
+p2 <- ggplot(imp_perm |> 
+               slice(1:15) |>
+               mutate(Feature = str_replace_all(Feature, "_", " ")), 
+             aes(x = reorder(Feature, Importance), y = Importance, fill = Method)) +
+  geom_col(show.legend = FALSE,
+           color = "black", fill = "forestgreen") +
+  coord_flip() +
+  labs(title = "(b) Accuracy Reduction" ,
+       x = "Feature", y = "Importance") +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(size = 14, face = "bold"),
+    plot.subtitle = element_text(size = 14, face = "bold"),
+    legend.text = element_text(size = 12),
+    axis.text = element_text(size = 12, face = "bold"),
+    axis.title = element_text(size = 14, face = "bold")
+  )
+
+p1
+p2
+```
+
+### Feature Ranking by Borda’s Method
+To obtain a unique final classification for evaluation, the two individual rankings were combined using Borda’s method. For each feature $f$, the position in the accuracy decrease ranking $p_{1}(f)$ was added to its position in the Gini impurity ranking** $p_{2}(f)$. This sum, referred to as the Borda score, was then used to order the features in ascending order, resulting in the Final Rank. The top 15 features from this aggregated ranking are presented in Table 8.
+```{r}
+gini_ranked <- imp_gini |>
+  mutate(rank_gini = rank(-Importance, ties.method = "average")) |>
+  rename(Importance_Gini = Importance) |>
+  select(Feature, Importance_Gini, rank_gini)
+
+perm_ranked <- imp_perm |>
+  mutate(rank_acc = rank(-Importance, ties.method = "average")) |>
+  rename(Importance_Acc = Importance) |>
+  select(Feature, Importance_Acc, rank_acc)
+
+# Combine and compute Borda
+borda_tbl <- gini_ranked |>
+  inner_join(perm_ranked, by = "Feature") |>
+  mutate(BordaScore = rank_gini + rank_acc) |>
+  arrange(BordaScore, rank_gini, rank_acc) |>
+  mutate(BordaRank = row_number())
+
+
+borda_tbl |>
+  select(-BordaScore) |>
+  relocate(BordaRank, Feature) |>
+  mutate(Feature = str_replace_all(Feature, "_", " ")) |>
+  slice(1:15)|>
+  rename(
+    `Final rank` = BordaRank,
+    `Accuracy decrease` = Importance_Acc,
+    `Accuracy decrease rank` = rank_acc,
+    `Gini impurity` = Importance_Gini,
+    `Gini impurity rank` = rank_gini
+  ) |>
+  arrange(`Final rank`) |>
+  gt() |>
+  tab_caption("Two rankings merged through their position, through the Borda’s method (Top 15)") |>
+  opt_table_font(font = list(gt::google_font("Roboto Condensed"), default_fonts())) |>
+  opt_table_outline() |>
+  opt_row_striping() |>
+  gt::tab_options(
+    table.font.size = px(14),
+    data_row.padding = px(4),
+    heading.title.font.size = px(16),
+    column_labels.font.weight = "bold",
+    column_labels.background.color = "skyblue"
+  )
+```
+### Model Evaluation with Top-k Features
+
+To evaluate the performance of the Random Forest (RF) model using only the most important predictors, we selected the top-k features from the Borda ranking list (k = 1 to 15) and assessed the model using Accuracy, MacroAUC, and MacroF1. This step is important because selecting the optimal number of features balances model performance: including too many features risks overfitting and unnecessary complexity, while too few can miss important predictive information. By identifying the smallest k that achieves near-maximum performance, we can improve efficiency, reduce noise, and focus on the most informative variables.
+
+The plot below shows that model performance improves rapidly up to around k = 6, after which the gains plateau across all metrics. Therefore, we selected the top 6 features for the final model, as this provides strong predictive performance while maintaining parsimony.
+
+```{r}
+# Evaluate RF with top-k features from Borda list
+set.seed(123)
+
+# Filter Borda features to those in data
+borda_tbl <- borda_tbl |>
+  filter(Feature %in% setdiff(names(train_imp), "class")) |>
+  arrange(BordaScore)
+
+# Metric helpers
+macro_f1 <- function(cm) {
+  mean(sapply(rownames(cm), function(cl) {
+    tp <- cm[cl, cl]
+    fp <- sum(cm[, cl]) - tp
+    fn <- sum(cm[cl, ]) - tp
+    p  <- if ((tp+fp)==0) 0 else tp/(tp+fp)
+    r  <- if ((tp+fn)==0) 0 else tp/(tp+fn)
+    if ((p+r)==0) 0 else 2*p*r/(p+r)
+  }), na.rm = TRUE)
+}
+
+macro_auc <- function(y, probs) {
+  mean(sapply(levels(y), function(cl) {
+    y_bin <- as.numeric(y == cl)
+    as.numeric(roc(y_bin, probs[[cl]], quiet = TRUE)$auc)
+  }), na.rm = TRUE)
+}
+
+# RF evaluation 
+fit_eval_rf <- function(train_df, test_df, feats, num.trees = 800) {
+  fml <- reformulate(feats, "class")
+  fit <- ranger(
+    fml, data = train_df, num.trees = num.trees,
+    mtry = max(1, floor(sqrt(length(feats)))), probability = TRUE,
+    importance = "permutation", seed = 123
+  )
+  probs <- predict(fit, data = test_df)$predictions
+  pred  <- factor(colnames(probs)[max.col(probs)], levels = levels(test_df$class))
+  cm    <- table(test_df$class, pred)
+  
+  tibble(
+    k        = length(feats),
+    Accuracy = mean(pred == test_df$class),
+    MacroF1  = macro_f1(cm),
+    MacroAUC = macro_auc(test_df$class, as.data.frame(probs))
+  )
+}
+
+# subsets 
+ks <- 1:15
+topk_list <- setNames(lapply(ks, \(k) head(borda_tbl$Feature, k)), paste0("Top", ks))
+
+# evaluations 
+perf_tbl <- imap_dfr(topk_list, ~ fit_eval_rf(train_imp, test_imp, .x) |> mutate(Subset = .y)) |>
+  arrange(match(Subset, paste0("Top", ks)))
+
+perf_tbl_long <- perf_tbl |>
+  pivot_longer(
+    cols = c(Accuracy, MacroF1, MacroAUC),
+    names_to = "Metric",
+    values_to = "Value"
+  )
+
+ggplot(perf_tbl_long, aes(x = k, y = Value, color = Metric)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 3) +
+  geom_vline(xintercept = c(6), linetype = "dashed", color = "grey50") +
+  scale_x_continuous(breaks = 1:15) +
+  labs(
+    title = "RF Performance vs Number of Top Features",
+    x = "Number of Top Features (k)",
+    y = "Metric Value",
+    color = "Metric"
+  ) +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.title = element_text(size = 12),
+    plot.title = element_text(size = 14, face = "bold"),
+    plot.subtitle = element_text(size = 14, face = "bold"),
+    legend.text = element_text(size = 12),
+    axis.text = element_text(size = 12, face = "bold"),
+    axis.title = element_text(size = 14, face = "bold")
+  )
+
+```
+
+### Final Selection: Top‑6 Features from the Borda Ranking
+
+Following the top‑k evaluation, the Top‑6 features (lowest Borda scores) are chosen as the compact set for downstream modeling and interpretation. The plot below highlights exactly those six features within the full Borda ranking. A small table is also included for quick reference.
+
+```{r, fig.width=10, fig.height=10}
+borda_plot_df <- borda_tbl |>
+  mutate(Feature = str_replace_all(Feature, "_", " ")) |>
+  arrange(BordaScore) |>       
+  mutate(
+    Feature = factor(Feature, levels = Feature),  
+    Top6 = row_number() <= 6
+  )
+
+ggplot(borda_plot_df, aes(x = BordaScore, y = Feature)) +
+  geom_point(size = 2.6, color = "#3abeff") +
+  geom_point(data = dplyr::filter(borda_plot_df, Top6),
+             shape = 21, size = 5, stroke = 1.2, color = "red", fill = NA) +
+  labs(
+    title = "Aggregated Feature Rankings (Borda)",
+    subtitle = "Lower Borda score = higher overall importance",
+    x = "Borda score (sum of ranks)",
+    y = "Feature"
+  ) +
+  expand_limits(x = 0) +
+  theme_bw() +
+  theme(
+    axis.ticks.y = element_blank(),
+    legend.position = "bottom",
+    legend.title = element_text(size = 12),
+    plot.title = element_text(size = 14, face = "bold"),
+    plot.subtitle = element_text(size = 14, face = "bold"),
+    legend.text = element_text(size = 12),
+    axis.text = element_text(size = 12, face = "bold"),
+    axis.title = element_text(size = 14, face = "bold")
+  )
+```
+
+### Decision-Tree Pathways from the Top‑6 Features
+
+A conditional inference tree (ctree) is trained using only the six features with the lowest Borda scores. This tree yields transparent pathways in the form of if/then rules that map combinations of clinical and histopathological findings to one of the six disease classes. The conditional inference tree provides a structured decision-making process for identifying the most likely disease based on the top six histopathological features. Each split in the tree represents a statistically significant decision point, with p-values confirming the importance of that feature in separating disease classes. The terminal nodes show the dominant disease classification for patients with specific combinations of feature values, allowing us to trace a clear diagnostic path.
+
+At the top of the tree, fibrosis of the papillary dermis is the primary splitting feature, dividing patients into two major groups. Those with low or absent fibrosis are further split based on elongation of the rete ridges and koebner phenomenon, which in turn lead to branches determined by spongiosis levels. This pathway creates multiple subgroups: for instance, Node 5 primarily classifies as Disease 3, Node 6 as Disease 4, Node 8 as Disease 1, and Node 9 again as Disease 4. A further split using clubbing of the rete ridges separates patients into Disease 1 (Node 12) and Disease 2 (Node 13), while Node 14 retains a dominant classification of Disease 4.
+
+On the other side of the main split, patients with higher fibrosis of the papillary dermis are separated by their level of spongiosis, producing two distinct disease outcomes. Node 16, with lower spongiosis, corresponds predominantly to Disease 5, while Node 17, with higher spongiosis, corresponds to Disease 6. This structure means that by following the decision path from the root to a terminal node, we can determine the most probable disease among the six possibilities.
+
+Overall, the tree clearly demonstrates that the top six features provide meaningful separation between the diseases. By interpreting each node and the conditions leading to it, we can see how specific histopathological patterns strongly align with certain diagnoses, making this model useful for guiding disease identification in practice.
+```{r, fig.width=12, fig.height=10}
+# Select top 6 features from Borda scores
+top_features <- borda_plot_df |>
+  arrange(BordaScore) |>
+  slice(1:6) |>
+  pull(Feature)
+
+# Keep only target + top 6 features
+df_top6 <- data |>
+  select(class, all_of(top_features))
+
+# Tree
+ctree_pk <- partykit::ctree(class ~ ., data = df_top6)
+
+# Class mapping 
+cls_levels <- levels(df_top6$class)
+cls_names <- c(
+  `1` = "Psoriasis",
+  `2` = "Seboreic Dermatitis",
+  `3` = "Lichen Planus",
+  `4` = "Pityriasis Rosea",
+  `5` = "Cronic Dermatitis",
+  `6` = "Pityriasis Rubra Pilaris"
+)[cls_levels]
+
+names(cls_cols) <- cls_levels
+
+p_text <- function(p) ifelse(is.na(p), "", ifelse(p < 0.001, "p < 0.001", sprintf("p = %.3f", p)))
+
+# Tree
+p_tree  <-  ggparty(ctree_pk) +
+  geom_edge() +
+  geom_edge_label(size = 4) +
+  geom_node_splitvar(
+    ids = "inner",
+    aes(label = paste0(splitvar, "\n", p_text(p.value))),
+    fill = "lightblue", color = "black", size = 4
+  ) +
+  geom_node_plot(
+    ids = "terminal",
+    gglist = list(
+      geom_bar(aes(x = factor(1), fill = class),
+               stat = "count", position = "fill", width = 0.9),
+      scale_fill_manual(values = cls_cols, labels = cls_names, name = "Class"),
+      scale_x_discrete(labels = NULL, breaks = NULL),
+      labs(x = NULL, y = NULL),
+      theme_void(),
+  theme(
+    axis.ticks.y = element_blank(),
+    axis.text = element_text(size = 10, face = "bold")
+  )
+    )
+  ) +
+  geom_node_label(
+    aes(label = paste0("n = ", nodesize)),
+    nudge_y = -0.04, size = 3,
+    label.r = unit(0.15, "lines"),
+    fill = "white"
+  ) +
+  theme_void(base_size = 12) +
+  labs(title = "Pathways (Top 6 Features)",
+       x = "",
+       y = "") +
+  theme(
+    plot.title = element_text(size = 14, face = "bold"),
+    plot.subtitle = element_text(size = 14, face = "bold")
+  )
+
+leg_df <- data.frame(
+  class = factor(cls_levels, levels = cls_levels),
+  name  = unname(cls_names[cls_levels])  
+)
+
+legend_strip <-
+  ggplot(leg_df, aes(x = class, y = 1, fill = class)) +
+  geom_tile(height = 0.7, width = 0.9) +
+  geom_text(aes(label = name), vjust = 0.5, hjust = 0.5, size = 3.3,
+            color = "black", fontface = "bold") +
+  scale_fill_manual(values = cls_cols, guide = "none") +
+  scale_x_discrete(expand = expansion(mult = c(0.02, 0.02))) +
+  scale_y_continuous(limits = c(0.5, 1.5)) +
+  theme_void() 
+
+
+final_plot <- p_tree / legend_strip + plot_layout(heights = c(1, 0.12))
+final_plot
+```
+
+## Conclusion
+Using the top six features identified by the aggregated Borda ranking, a classification tree was constructed to visualize key decision pathways. This model highlights the most influential variables and their hierarchical relationships, providing interpretable rules for distinguishing between the six skin disease classes.

@@ -7,7 +7,7 @@ format:
     page-layout: full
 editor: visual
 ---
-
+ 
 # Welcome
 
 Welcome to my portfolio of statistical analysis projects. I specialize in clinical trial data and health analytics.
@@ -17,6 +17,6 @@ Welcome to my portfolio of statistical analysis projects. I specialize in clinic
 ## Featured Projects
 
 ### [Site Reliability Analysis in Hypertension Treatment Clinical Trial](cardiox_site_reliability.qmd)
+### [Diagnosing Erythemato-Squamous Diseases Using Patient Features](eryhemato_squamous_disease.qmd)
 
 ---
-

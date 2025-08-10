@@ -95,7 +95,7 @@ data
 ```
 
 ### Missing Values 
-Inspection of the dataset revealed that only the `age` feature contains missing values**.  
+Inspection of the dataset revealed that only the `age` feature contains missing values.  
 All other clinical and histopathological features are complete.  
 
 The missing values in `age` will be addressed using the `missForest` imputation method.

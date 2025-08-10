@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Prince Agyapong">
-<meta name="dcterms.date" content="2025-08-09">
+<meta name="dcterms.date" content="2025-08-10">
 
 <title>Feature Selection and Pathways to Diagnosing Erythemato-Squamous Diseases – Statistical-Analysis</title>
 <style>
@@ -231,7 +231,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">August 9, 2025</p>
+      <p class="date">August 10, 2025</p>
     </div>
   </div>
   
@@ -614,7 +614,7 @@ In each case, only the top 15 features are shown for clarity.</p>
 </section>
 <section id="feature-ranking-by-bordas-method" class="level3">
 <h3 class="anchored" data-anchor-id="feature-ranking-by-bordas-method">Feature Ranking by Borda’s Method</h3>
-<p>To obtain a unique final classification for evaluation, the two individual rankings were combined using Borda’s method. For each feature <span class="math inline">\(f\)</span>, the position in the accuracy decrease ranking <span class="math inline">\(p_{1}(f)\)</span> was added to its position in the Gini impurity ranking** <span class="math inline">\(p_{2}(f)\)</span>. This sum, referred to as the Borda score, was then used to order the features in ascending order, resulting in the Final Rank. The top 15 features from this aggregated ranking are presented in Table 8.</p>
+<p>To obtain a unique final classification for evaluation, the two individual rankings were combined using Borda’s method. For each feature <span class="math inline">\(f\)</span>, the position in the accuracy decrease ranking <span class="math inline">\(p_{1}(f)\)</span> was added to its position in the Gini impurity ranking <span class="math inline">\(p_{2}(f)\)</span>. This sum, referred to as the Borda score, was then used to order the features in ascending order, resulting in the Final Rank. The top 15 features from this aggregated ranking are presented in Table 8.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Show Code</summary>
@@ -1403,9 +1403,7 @@ In each case, only the top 15 features are shown for clarity.</p>
 <section id="decision-tree-pathways-from-the-top6-features" class="level3">
 <h3 class="anchored" data-anchor-id="decision-tree-pathways-from-the-top6-features">Decision-Tree Pathways from the Top‑6 Features</h3>
 <p>A conditional inference tree (ctree) is trained using only the six features with the lowest Borda scores. This tree yields transparent pathways in the form of if/then rules that map combinations of clinical and histopathological findings to one of the six disease classes. The conditional inference tree provides a structured decision-making process for identifying the most likely disease based on the top six histopathological features. Each split in the tree represents a statistically significant decision point, with p-values confirming the importance of that feature in separating disease classes. The terminal nodes show the dominant disease classification for patients with specific combinations of feature values, allowing us to trace a clear diagnostic path.</p>
-<p>At the top of the tree, fibrosis of the papillary dermis is the primary splitting feature, dividing patients into two major groups. Those with low or absent fibrosis are further split based on elongation of the rete ridges and koebner phenomenon, which in turn lead to branches determined by spongiosis levels. This pathway creates multiple subgroups: for instance, Node 5 primarily classifies as Disease 3, Node 6 as Disease 4, Node 8 as Disease 1, and Node 9 again as Disease 4. A further split using clubbing of the rete ridges separates patients into Disease 1 (Node 12) and Disease 2 (Node 13), while Node 14 retains a dominant classification of Disease 4.</p>
-<p>On the other side of the main split, patients with higher fibrosis of the papillary dermis are separated by their level of spongiosis, producing two distinct disease outcomes. Node 16, with lower spongiosis, corresponds predominantly to Disease 5, while Node 17, with higher spongiosis, corresponds to Disease 6. This structure means that by following the decision path from the root to a terminal node, we can determine the most probable disease among the six possibilities.</p>
-<p>Overall, the tree clearly demonstrates that the top six features provide meaningful separation between the diseases. By interpreting each node and the conditions leading to it, we can see how specific histopathological patterns strongly align with certain diagnoses, making this model useful for guiding disease identification in practice.</p>
+<p>The classification tree shows that fibrosis of the papillary dermis is the most important initial split, dividing patients into two main groups. Those with low or absent fibrosis are further separated by elongation of the rete ridges, followed by either koebner phenomenon or spongiosis levels, producing distinct subgroups. For example, low koebner phenomenon with minimal spongiosis is associated mainly with Seboreic Dermatitis, while other branches reveal higher proportions of Lichen Planus, Psoriasis, or Pityriasis Rosea. A split based on clubbing of the rete ridges further distinguishes between Psoriasis and Seboreic Dermatitis. On the other side, patients with higher fibrosis are divided by spongiosis level, with lower spongiosis linked predominantly to Cronic Dermatitis and higher spongiosis to Pityriasis Rubra Pilaris. This structure highlights clear, interpretable pathways that connect specific clinical and histopathological features to the six skin disease classes.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Show Code</summary>

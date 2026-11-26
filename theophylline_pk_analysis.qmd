@@ -1,0 +1,1435 @@
+---
+title: "Pharmacokinetic Analysis of Theophylline"
+subtitle: "Non-Compartmental, Individual Compartmental, and Population Modeling Approaches"
+author: "Prince Agyapong"
+date: today
+format:
+  html:
+    theme: yeti
+    toc: true
+    toc-depth: 4
+    toc-location: left
+    number-sections: false
+    code-fold: true
+    code-summary: "Show Code"
+    df-print: paged
+    smooth-scroll: true
+    link-external-icon: true
+    link-external-newwindow: true
+execute:
+  warning: false
+  message: false
+  echo: true
+editor: visual
+---
+
+```{r setup}
+#| include: false
+pacman::p_load(tidyverse, gt, patchwork, nlme)
+
+theme_set(
+  theme_minimal(base_size = 18) +
+    theme(
+      plot.title = element_text(face = "bold", size = rel(1.15)),
+      plot.subtitle = element_text(size = rel(0.95)),
+      axis.title = element_text(size = rel(1.05)),
+      axis.text = element_text(size = rel(0.95), color = "black"),
+      strip.text = element_text(face = "bold", size = rel(1)),
+      legend.title = element_text(size = rel(1)),
+      legend.text = element_text(size = rel(0.95))
+    )
+)
+update_geom_defaults("point", list(size = 2.8))
+update_geom_defaults("line", list(linewidth = 1.1))
+update_geom_defaults("smooth", list(linewidth = 1.3))
+pk_colors <- c("#E64B35", "#4DBBD5", "#00A087", "#3C5488", "#F39B7F", "#8491B4",
+               "#91D1C2", "#DC0000", "#7E6148", "#B09C85", "#00A1D5", "#374E55")
+
+param_html <- c(
+  C0 = "C<sub>0</sub> (mg/L)",
+  Cmax = "C<sub>max</sub> (mg/L)",
+  Tmax = "T<sub>max</sub> (h)",
+  AUC_0_t = "AUC<sub>0-t</sub> (mg·h/L)",
+  AUC_0_inf = "AUC<sub>0-∞</sub> (mg·h/L)",
+  Pct_Extrap = "AUC<sub>%extrap</sub> (%)",
+  Lambda_z = "λ<sub>z</sub> (h<sup>-1</sup>)",
+  N_lz = "n<sub>λz</sub>",
+  Adj_R2_lz = "Adj. R<sup>2</sup><sub>λz</sub>",
+  Half_life = "t<sub>1/2</sub> (h)",
+  CL_F = "CL/F (L/h)",
+  Vd_F = "V<sub>z</sub>/F (L)",
+  MRT = "MRT (h)",
+  Ka = "K<sub>a</sub> (h<sup>-1</sup>)",
+  Ke = "K<sub>e</sub> (h<sup>-1</sup>)",
+  V = "V/F (L)",
+  K10 = "K<sub>10</sub> (h<sup>-1</sup>)",
+  K12 = "K<sub>12</sub> (h<sup>-1</sup>)",
+  K21 = "K<sub>21</sub> (h<sup>-1</sup>)",
+  Vc = "V<sub>c</sub>/F (L)",
+  R2 = "R<sup>2</sup>",
+  RMSE = "RMSE (mg/L)"
+)
+
+html_labels <- function(cols) map(param_html[cols], html)
+
+list_ids <- function(x) {
+  x <- as.character(x)
+  if (length(x) <= 1) return(x)
+  paste(paste(head(x, -1), collapse = ", "), "and", last(x))
+}
+subject_word <- function(x) if (length(x) == 1) "subject" else "subjects"
+
+geo_cv <- function(x) 100 * sqrt(exp(sd(log(x))^2) - 1)
+iqr_outlier <- function(x) x < quantile(x, 0.25) - 1.5 * IQR(x) | x > quantile(x, 0.75) + 1.5 * IQR(x)
+```
+
+# Introduction
+
+## Background on Pharmacokinetics
+
+Pharmacokinetics (PK) is the quantitative study of drug absorption, distribution, metabolism, and elimination (ADME). The concentration-time profile following administration summarizes these processes and is the basis for choosing doses that reach therapeutic concentrations while limiting toxicity.
+
+Theophylline is a methylxanthine bronchodilator used in asthma and chronic obstructive pulmonary disease (COPD). It has a narrow therapeutic index. The traditional target range is 10 to 20 mg/L, and many current references use 5 to 15 mg/L. Concentrations below the range may be ineffective, and concentrations above it can cause seizures, cardiac arrhythmias, and death, so accurate PK characterization matters clinically.
+
+## Analytical Approaches in Pharmacokinetics
+
+### Non-Compartmental Analysis (NCA)
+
+Non-compartmental analysis makes minimal assumptions about the underlying physiology and relies on the shape of the observed concentration-time curve. NCA gives estimates of area under the curve (AUC), maximum concentration (C~max~), clearance, and half-life using numerical integration and log-linear regression of the terminal phase.
+
+**Advantages of NCA:**
+
+-   No assumptions about compartmental structure
+-   Simple calculations
+-   Standard for regulatory bioavailability and bioequivalence assessments
+-   Not affected by structural model misspecification
+
+**Limitations of NCA:**
+
+-   Cannot predict concentrations at unobserved times or under other dosing regimens
+-   Limited mechanistic insight
+-   Cannot separate distribution from elimination processes
+
+### Compartmental Analysis
+
+Compartmental models describe the body as one or more interconnected compartments with first-order transfer between them. They allow prediction of concentrations under other dosing scenarios.
+
+**One-Compartment Model:** The drug distributes instantaneously and uniformly into a single compartment. This is appropriate when distribution is fast relative to elimination.
+
+**Two-Compartment Model:** The drug enters a central compartment (blood and highly perfused tissues) and equilibrates more slowly with a peripheral compartment. This produces a biphasic decline: a faster distribution phase followed by a slower terminal phase.
+
+### Population (Mixed-Effects) Modeling
+
+Fitting each subject separately and then summarizing the estimates (the two-stage approach) ignores the uncertainty in each subject's estimates and tends to overstate between-subject variability. Nonlinear mixed-effects models fit all subjects together, estimating typical (population) parameters, between-subject variability (BSV), and residual error at the same time.
+
+## Study Objectives
+
+This analysis aims to:
+
+1.  **Perform non-compartmental analysis** of theophylline PK data, with all NCA parameters calculated from first principles
+2.  **Fit one-compartment models** to each subject to characterize absorption and elimination
+3.  **Fit two-compartment models** to each subject to evaluate whether a distribution phase can be identified
+4.  **Compare the structural models** using convergence, information criteria, and diagnostic plots
+5.  **Fit a population PK model** with nonlinear mixed effects to estimate typical parameters and between-subject variability
+6.  **Interpret the results** in the context of theophylline clinical pharmacology
+
+# Methods
+
+## Study Data
+
+The analysis uses the `Theoph` dataset included in R, which contains concentration-time data from 12 subjects who each received a single oral dose of theophylline. Each subject provided 11 blood samples over approximately 24 hours. Sampling times in the dataset are actual times and differ slightly between subjects; for summaries by time point, each sample was assigned its nominal time (0, 0.25, 0.5, 1, 2, 3.5, 5, 7, 9, 12, and 24 hours).
+
+```{r load-data}
+nominal_times <- c(0, 0.25, 0.5, 1, 2, 3.5, 5, 7, 9, 12, 24)
+
+pk_data <- Theoph |>
+  as_tibble() |>
+  rename(ID = Subject, TIME = Time, CONC = conc, DOSE = Dose, WT = Wt) |>
+  mutate(
+    ID = factor(as.character(ID), levels = as.character(1:12)),
+    DOSE_mg = DOSE * WT
+  ) |>
+  arrange(ID, TIME) |>
+  group_by(ID) |>
+  mutate(NTIME = nominal_times[row_number()]) |>
+  ungroup()
+
+# Observations after dosing; the pre-dose sample is excluded from model fitting
+fit_data <- pk_data |> filter(TIME > 0)
+
+n_subjects <- n_distinct(pk_data$ID)
+predose <- pk_data |> filter(TIME == 0, CONC > 0)
+```
+
+## Non-Compartmental Analysis Methods
+
+### Area Under the Curve (AUC)
+
+AUC~0-t~ was calculated with the linear-up/log-down trapezoidal method. Segments where concentration increased or stayed the same used the linear trapezoidal rule:
+
+$$AUC_{i \to i+1} = \frac{(C_i + C_{i+1})}{2} \times (t_{i+1} - t_i)$$
+
+Segments where concentration decreased used the log-linear trapezoidal rule:
+
+$$AUC_{i \to i+1} = \frac{(C_i - C_{i+1})}{\ln(C_i/C_{i+1})} \times (t_{i+1} - t_i)$$
+
+### Terminal Elimination Rate Constant (λ~z~)
+
+λ~z~ was estimated by log-linear regression of the terminal phase:
+
+$$\ln(C) = \ln(C_0) - \lambda_z \times t$$
+
+The terminal phase was selected automatically. Regressions were fitted to the last 3, 4, 5, and so on, points after C~max~ (C~max~ itself excluded). The regression with the highest adjusted R² was selected; when several regressions had an adjusted R² within 0.0001 of the highest value, the one using the most points was chosen. The slope with its sign reversed gives λ~z~.
+
+### Terminal Half-Life (t~1/2~)
+
+$$t_{1/2} = \frac{\ln(2)}{\lambda_z}$$
+
+### AUC Extrapolated to Infinity (AUC~0-∞~)
+
+$$AUC_{0-\infty} = AUC_{0-t} + \frac{C_{last}}{\lambda_z}$$
+
+where C~last~ is the last measurable concentration. The percentage of AUC~0-∞~ obtained by extrapolation (AUC~%extrap~) was calculated for each subject, and AUC~0-∞~ was flagged as unreliable when AUC~%extrap~ exceeded 20%.
+
+### Apparent Oral Clearance (CL/F)
+
+$$CL/F = \frac{Dose}{AUC_{0-\infty}}$$
+
+where F is the unknown oral bioavailability.
+
+### Apparent Terminal Volume of Distribution (V~z~/F)
+
+$$V_z/F = \frac{CL/F}{\lambda_z}$$
+
+### Mean Residence Time (MRT)
+
+$$MRT = \frac{AUMC_{0-\infty}}{AUC_{0-\infty}}$$
+
+where AUMC is the area under the first moment curve (concentration × time versus time). AUMC~0-t~ used the same linear-up/log-down rule as AUC. For decreasing segments:
+
+$$AUMC_{i \to i+1} = \frac{\Delta t \,(t_i C_i - t_{i+1} C_{i+1})}{\ln(C_i/C_{i+1})} + \frac{\Delta t^2 \,(C_i - C_{i+1})}{\left[\ln(C_i/C_{i+1})\right]^2}$$
+
+and the extrapolated portion is $t_{last} C_{last}/\lambda_z + C_{last}/\lambda_z^2$. Because dosing was oral, MRT includes the mean absorption time.
+
+### Pre-Dose Concentrations {#sec-predose-methods}
+
+Three subjects had measurable concentrations in the pre-dose sample ([Pre-Dose Concentrations](#sec-predose)). These were kept as observed values in NCA, so AUC~0-t~ includes the area from the pre-dose concentration. The compartmental models predict a concentration of zero at time zero, so pre-dose samples were excluded from all model fitting.
+
+### Summary Statistics
+
+C~max~, AUC, CL/F, and V~z~/F are summarized with geometric means and geometric coefficients of variation (CV%), as these parameters are typically log-normally distributed. Arithmetic mean, SD, and CV% are also shown. T~max~ is summarized with the median and range only.
+
+## Individual Compartmental Models
+
+### One-Compartment Model Structure
+
+For oral administration with first-order absorption into a single compartment:
+
+```         
+         Ka           Ke
+Depot -------> Central -------> Elimination
+```
+
+$$\frac{dA_{depot}}{dt} = -K_a \times A_{depot}$$
+
+$$\frac{dA_{central}}{dt} = K_a \times A_{depot} - K_e \times A_{central}$$
+
+where A is the amount of drug in each compartment. The analytical solution is:
+
+$$C(t) = \frac{Dose \times K_a}{V/F \times (K_a - K_e)} \times \left(e^{-K_e t} - e^{-K_a t}\right)$$
+
+**Parameters:**
+
+-   **K~a~** (absorption rate constant, h^-1^)
+-   **K~e~** (elimination rate constant, h^-1^)
+-   **V/F** (apparent volume of distribution, L)
+
+The model is symmetric in K~a~ and K~e~ (the "flip-flop" problem), so it was parameterized as K~a~ = K~e~ + exp(θ) to restrict estimates to the solution with K~a~ \> K~e~.
+
+### Two-Compartment Model Structure
+
+```         
+         Ka                K12
+Depot -------> Central <--------> Peripheral
+                  |       K21
+                  | K10
+                  v
+             Elimination
+```
+
+$$\frac{dA_{depot}}{dt} = -K_a \times A_{depot}$$
+
+$$\frac{dA_{central}}{dt} = K_a \times A_{depot} - (K_{10} + K_{12}) \times A_{central} + K_{21} \times A_{peripheral}$$
+
+$$\frac{dA_{peripheral}}{dt} = K_{12} \times A_{central} - K_{21} \times A_{peripheral}$$
+
+The analytical solution is:
+
+$$C(t) = \frac{Dose \times K_a}{V_c/F} \left[\frac{K_{21} - \alpha}{(K_a - \alpha)(\beta - \alpha)} e^{-\alpha t} + \frac{K_{21} - \beta}{(K_a - \beta)(\alpha - \beta)} e^{-\beta t} + \frac{K_{21} - K_a}{(\alpha - K_a)(\beta - K_a)} e^{-K_a t}\right]$$
+
+where α and β are the hybrid rate constants:
+
+$$\alpha, \beta = \frac{(K_{10} + K_{12} + K_{21}) \pm \sqrt{(K_{10} + K_{12} + K_{21})^2 - 4 K_{10} K_{21}}}{2}$$
+
+**Parameters:**
+
+-   **K~a~** (absorption rate constant, h^-1^)
+-   **K~10~** (elimination rate constant from the central compartment, h^-1^)
+-   **K~12~** (central to peripheral transfer rate constant, h^-1^)
+-   **K~21~** (peripheral to central transfer rate constant, h^-1^)
+-   **V~c~/F** (apparent central volume, L)
+
+Derived parameters: V~p~/F = V~c~/F × K~12~/K~21~, V~ss~/F = V~c~/F + V~p~/F, and CL/F = K~10~ × V~c~/F.
+
+### Estimation
+
+Both models were fitted to each subject by nonlinear least squares (`nls()`, Gauss-Newton). All parameters were estimated on the log scale to keep them positive. Each fit was started from several sets of initial values (3 for the one-compartment model and 36 for the two-compartment model), and the converged fit with the lowest residual sum of squares was kept. A fit was counted as converged only when `nls()` reported convergence (`convInfo$isConv`); fits ending in false or singular convergence were treated as failures.
+
+An unweighted (additive) residual error model was used. This choice was checked in the population analysis, where power and combined additive-proportional variance models were compared against the additive model ([Model Development](#sec-pop-dev)).
+
+## Model Comparison Criteria
+
+Models were compared using:
+
+1.  **Convergence** of each model for each subject
+2.  **Akaike Information Criterion:** $AIC = -2\ln L + 2k$, where L is the maximized Gaussian likelihood and k counts the structural parameters plus the residual variance (as returned by `AIC()`)
+3.  **Bayesian Information Criterion:** $BIC = -2\ln L + k \ln(n)$
+4.  **Root Mean Square Error:** $RMSE = \sqrt{\frac{\sum(C_{obs} - C_{pred})^2}{n}}$
+5.  **Coefficient of determination (R²)**, reported descriptively
+6.  **Visual inspection** of fitted curves and residual plots
+
+A ΔAIC (two-compartment minus one-compartment) below -2 was taken to favor the two-compartment model, and above 2 to favor the one-compartment model.
+
+## Population PK Model
+
+A one-compartment population model with first-order absorption and elimination was fitted to all subjects with `nlme()`, using the self-starting `SSfol()` model parameterized as log(K~e~), log(K~a~), and log(CL/F). Individual parameters were modeled as log-normally distributed around the typical values, with a diagonal covariance matrix for the random effects. Estimation used maximum likelihood.
+
+Candidate models differed in which parameters had random effects and in the residual error model (additive, power, and combined additive-proportional). Among models within 2 AIC units of the lowest AIC, the one with the fewest parameters was selected. BSV is reported as CV% = $100\sqrt{e^{\omega^2} - 1}$, where ω is the standard deviation of the random effect.
+
+## Software
+
+All analyses were performed using `r R.version.string` with tidyverse for data manipulation and plotting, nlme for population modeling, gt for tables, and patchwork for figure layout.
+
+# Results
+
+## Exploratory Data Analysis
+
+### Dataset Overview
+
+```{r table1-demographics}
+demo_summary <- pk_data |>
+  group_by(ID) |>
+  summarise(
+    Weight = first(WT),
+    Dose_mg_kg = first(DOSE),
+    Dose_mg = first(DOSE_mg),
+    n_samples = n(),
+    .groups = "drop"
+  )
+
+demo_summary |>
+  summarise(
+    `N Subjects` = as.character(n()),
+    `Weight (kg), Mean (SD)` = sprintf("%.1f (%.1f)", mean(Weight), sd(Weight)),
+    `Weight (kg), Range` = sprintf("%.1f to %.1f", min(Weight), max(Weight)),
+    `Dose (mg/kg), Mean (SD)` = sprintf("%.2f (%.2f)", mean(Dose_mg_kg), sd(Dose_mg_kg)),
+    `Total Dose (mg), Mean (SD)` = sprintf("%.1f (%.1f)", mean(Dose_mg), sd(Dose_mg)),
+    `Samples per Subject` = sprintf("%.0f", mean(n_samples))
+  ) |>
+  pivot_longer(everything(), names_to = "Parameter", values_to = "Value") |>
+  gt() |>
+  tab_header(
+    title = "Table 1. Study Population and Dosing Summary",
+    subtitle = "Theophylline Pharmacokinetic Study"
+  ) |>
+  cols_align(align = "left")
+```
+
+The study included **`r n_subjects` subjects** who received oral theophylline at weight-based doses (mean `r round(mean(demo_summary$Dose_mg_kg), 2)` mg/kg). Body weights ranged from `r round(min(demo_summary$Weight), 1)` to `r round(max(demo_summary$Weight), 1)` kg, giving absolute doses of `r round(min(demo_summary$Dose_mg), 1)` to `r round(max(demo_summary$Dose_mg), 1)` mg. Each subject provided `r round(mean(demo_summary$n_samples))` samples.
+
+### Pre-Dose Concentrations {#sec-predose}
+
+Subjects `r list_ids(predose$ID)` had measurable pre-dose concentrations (`r list_ids(sprintf("%.2f", predose$CONC))` mg/L, respectively). This may reflect residual drug from earlier exposure or assay background; the dataset does not allow the two to be distinguished. Their handling is described in [Pre-Dose Concentrations (Methods)](#sec-predose-methods).
+
+### Concentration-Time Profiles
+
+```{r fig-conc-time-individual}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-cap: "Figure 1. Individual Concentration-Time Profiles (Linear Scale)"
+
+ggplot(pk_data, aes(x = TIME, y = CONC, color = ID)) +
+  geom_line(linewidth = 1.1) +
+  geom_point(size = 2.8) +
+  scale_color_manual(values = pk_colors) +
+  labs(
+    x = "Time (hours)",
+    y = "Theophylline Concentration (mg/L)",
+    color = "Subject",
+    title = "Individual Concentration-Time Profiles",
+    subtitle = "Linear scale"
+  ) +
+  theme(legend.position = "right")
+```
+
+```{r eda-values}
+#| include: false
+indiv_peak <- pk_data |>
+  group_by(ID) |>
+  slice_max(CONC, n = 1, with_ties = FALSE) |>
+  ungroup()
+```
+
+Figure 1 shows the individual profiles on a linear scale. Concentrations rise over the first few hours, with individual peaks of `r sprintf("%.1f", min(indiv_peak$CONC))` to `r sprintf("%.1f", max(indiv_peak$CONC))` mg/L reached between `r sprintf("%.2f", min(indiv_peak$TIME))` and `r sprintf("%.2f", max(indiv_peak$TIME))` hours post-dose. Concentrations then decline through 24 hours.
+
+```{r fig-conc-time-semilog}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-cap: "Figure 2. Semi-Logarithmic Concentration-Time Profiles"
+
+ggplot(fit_data, aes(x = TIME, y = CONC, color = ID)) +
+  geom_line(linewidth = 1.1) +
+  geom_point(size = 2.8) +
+  scale_y_log10(breaks = c(1, 2, 5, 10), labels = c("1", "2", "5", "10")) +
+  scale_color_manual(values = pk_colors) +
+  labs(
+    x = "Time (hours)",
+    y = "Theophylline Concentration (mg/L)",
+    color = "Subject",
+    title = "Semi-Logarithmic Concentration-Time Profiles",
+    subtitle = "Post-dose samples; pre-dose zeros cannot be shown on a log scale"
+  ) +
+  theme(legend.position = "right") +
+  annotation_logticks(sides = "l")
+```
+
+On the semi-log scale (Figure 2), first-order elimination appears as a straight line. The terminal phases are approximately linear and roughly parallel across subjects. Visual inspection does not show a clear biphasic decline after the peak, although an early distribution phase could be hidden by ongoing absorption. The model comparison in [Model Comparison](#sec-model-comparison) tests this formally.
+
+### Mean Concentration Profile
+
+```{r fig-mean-profile}
+#| fig-width: 10
+#| fig-height: 6
+#| fig-cap: "Figure 3. Mean (± SD) Concentration-Time Profile by Nominal Time"
+
+mean_profile <- pk_data |>
+  group_by(NTIME) |>
+  summarise(
+    mean_conc = mean(CONC),
+    sd_conc = sd(CONC),
+    n = n(),
+    .groups = "drop"
+  ) |>
+  mutate(cv = 100 * sd_conc / mean_conc)
+
+p1 <- ggplot(mean_profile, aes(x = NTIME, y = mean_conc)) +
+  geom_ribbon(aes(ymin = pmax(0, mean_conc - sd_conc), ymax = mean_conc + sd_conc),
+              alpha = 0.3, fill = pk_colors[1]) +
+  geom_line(linewidth = 1.4, color = pk_colors[1]) +
+  geom_point(size = 3.5, color = pk_colors[1]) +
+  labs(x = "Nominal Time (hours)", y = "Concentration (mg/L)", title = "Linear Scale")
+
+p2 <- ggplot(filter(mean_profile, NTIME > 0), aes(x = NTIME, y = mean_conc)) +
+  geom_ribbon(aes(ymin = pmax(0.1, mean_conc - sd_conc), ymax = mean_conc + sd_conc),
+              alpha = 0.3, fill = pk_colors[2]) +
+  geom_line(linewidth = 1.4, color = pk_colors[2]) +
+  geom_point(size = 3.5, color = pk_colors[2]) +
+  scale_y_log10() +
+  labs(x = "Nominal Time (hours)", y = "Concentration (mg/L)", title = "Semi-Log Scale") +
+  annotation_logticks(sides = "l")
+
+p1 + p2 +
+  plot_annotation(
+    title = "Mean (± SD) Theophylline Concentration-Time Profile",
+    subtitle = "Shaded region represents ± 1 SD; n = 12 at each nominal time"
+  )
+```
+
+```{r mean-profile-values}
+#| include: false
+peak_mean <- slice_max(mean_profile, mean_conc, n = 1)
+cv_post <- mean_profile |> filter(NTIME >= 1)
+cv_early <- mean_profile |> filter(NTIME > 0, NTIME < 1)
+```
+
+The mean concentration peaked at `r sprintf("%.1f", peak_mean$mean_conc)` mg/L at the `r peak_mean$NTIME`-hour nominal time point (Figure 3). The CV of concentrations across subjects was `r sprintf("%.0f", min(cv_early$cv))`% to `r sprintf("%.0f", max(cv_early$cv))`% before 1 hour, reflecting differences in absorption, and `r sprintf("%.0f", min(cv_post$cv))`% to `r sprintf("%.0f", max(cv_post$cv))`% from 1 to 24 hours.
+
+## Non-Compartmental Analysis Results
+
+### NCA Parameter Calculations
+
+```{r nca-calculations}
+select_lambda_z <- function(time, conc) {
+  candidates <- which(seq_along(time) > which.max(conc) & conc > 0)
+
+  map(3:length(candidates), \(k) {
+    idx <- tail(candidates, k)
+    fit <- lm(log(conc[idx]) ~ time[idx])
+    tibble(
+      n_pts = k,
+      lambda_z = -coef(fit)[[2]],
+      adj_r2 = summary(fit)$adj.r.squared
+    )
+  }) |>
+    list_rbind() |>
+    filter(lambda_z > 0) |>
+    filter(adj_r2 >= max(adj_r2) - 1e-4) |>
+    slice_max(n_pts, n = 1)
+}
+
+calculate_nca <- function(data) {
+  data <- arrange(data, TIME)
+  time <- data$TIME
+  conc <- data$CONC
+  dose <- data$DOSE_mg[1]
+
+  t1 <- head(time, -1)
+  t2 <- tail(time, -1)
+  c1 <- head(conc, -1)
+  c2 <- tail(conc, -1)
+  dt <- t2 - t1
+  log_down <- c2 < c1 & c2 > 0
+  log_ratio <- log(c1 / c2)
+
+  auc_seg <- if_else(log_down, (c1 - c2) / log_ratio * dt, (c1 + c2) / 2 * dt)
+  aumc_seg <- if_else(
+    log_down,
+    dt * (t1 * c1 - t2 * c2) / log_ratio + dt^2 * (c1 - c2) / log_ratio^2,
+    (t1 * c1 + t2 * c2) / 2 * dt
+  )
+
+  lz <- select_lambda_z(time, conc)
+  lambda_z <- lz$lambda_z
+  t_last <- last(time)
+  c_last <- last(conc)
+
+  auc_0_t <- sum(auc_seg)
+  auc_0_inf <- auc_0_t + c_last / lambda_z
+  aumc_0_inf <- sum(aumc_seg) + t_last * c_last / lambda_z + c_last / lambda_z^2
+
+  tibble(
+    C0 = conc[1],
+    Cmax = max(conc),
+    Tmax = time[which.max(conc)],
+    AUC_0_t = auc_0_t,
+    AUC_0_inf = auc_0_inf,
+    Pct_Extrap = 100 * (c_last / lambda_z) / auc_0_inf,
+    Lambda_z = lambda_z,
+    N_lz = lz$n_pts,
+    Adj_R2_lz = lz$adj_r2,
+    Half_life = log(2) / lambda_z,
+    CL_F = dose / auc_0_inf,
+    Vd_F = dose / auc_0_inf / lambda_z,
+    MRT = aumc_0_inf / auc_0_inf
+  )
+}
+
+nca_results <- pk_data |>
+  group_by(ID) |>
+  group_modify(\(d, k) calculate_nca(d)) |>
+  ungroup() |>
+  mutate(Flag_Extrap = Pct_Extrap > 20)
+
+# Effect of the pre-dose concentrations on AUC0-t
+predose_impact <- pk_data |>
+  filter(ID %in% predose$ID) |>
+  mutate(CONC = if_else(TIME == 0, 0, CONC)) |>
+  group_by(ID) |>
+  group_modify(\(d, k) calculate_nca(d) |> select(AUC_0_t_zero = AUC_0_t)) |>
+  ungroup() |>
+  left_join(select(nca_results, ID, AUC_0_t), by = "ID") |>
+  mutate(Pct_Change = 100 * (AUC_0_t - AUC_0_t_zero) / AUC_0_t_zero)
+```
+
+### Individual NCA Results
+
+```{r table2-nca-individual}
+nca_cols <- c("Cmax", "Tmax", "AUC_0_t", "AUC_0_inf", "Pct_Extrap", "Lambda_z", "N_lz",
+              "Adj_R2_lz", "Half_life", "CL_F", "Vd_F", "MRT")
+
+nca_results |>
+  select(ID, all_of(nca_cols), Flag_Extrap) |>
+  gt() |>
+  cols_hide(Flag_Extrap) |>
+  tab_header(
+    title = "Table 2. Individual Non-Compartmental Analysis Results",
+    subtitle = "PK parameters calculated for each subject"
+  ) |>
+  fmt_number(columns = c(Cmax, Tmax, CL_F), decimals = 2) |>
+  fmt_number(columns = c(AUC_0_t, AUC_0_inf, Pct_Extrap, Half_life, Vd_F, MRT), decimals = 1) |>
+  fmt_number(columns = c(Lambda_z, Adj_R2_lz), decimals = 4) |>
+  cols_label(.list = c(list(ID = "Subject"), html_labels(nca_cols))) |>
+  cols_align(align = "center") |>
+  tab_footnote(
+    footnote = "AUC%extrap above 20%; AUC0-∞ and parameters derived from it (CL/F, Vz/F, MRT) are less reliable for this subject.",
+    locations = cells_body(columns = Pct_Extrap, rows = Flag_Extrap)
+  ) |>
+  tab_source_note(
+    source_note = html("C<sub>max</sub> = maximum concentration; T<sub>max</sub> = time of C<sub>max</sub>; AUC = area under the curve; AUC<sub>%extrap</sub> = percentage of AUC<sub>0-∞</sub> extrapolated; λ<sub>z</sub> = terminal elimination rate constant; n<sub>λz</sub> = number of points in the λ<sub>z</sub> regression; t<sub>1/2</sub> = terminal half-life; CL/F = apparent clearance; V<sub>z</sub>/F = apparent terminal volume; MRT = mean residence time")
+  )
+```
+
+### Summary of NCA Parameters
+
+```{r table3-nca-summary}
+geo_params <- c("Cmax", "AUC_0_t", "AUC_0_inf", "CL_F", "Vd_F")
+summary_params <- c("Cmax", "Tmax", "AUC_0_t", "AUC_0_inf", "Lambda_z", "Half_life", "CL_F", "Vd_F", "MRT")
+
+nca_summary <- nca_results |>
+  select(all_of(summary_params)) |>
+  pivot_longer(everything(), names_to = "Parameter", values_to = "value") |>
+  mutate(Parameter = factor(Parameter, levels = summary_params)) |>
+  group_by(Parameter) |>
+  summarise(
+    N = n(),
+    Mean = mean(value),
+    SD = sd(value),
+    CV = 100 * SD / Mean,
+    Geo_Mean = exp(mean(log(value))),
+    Geo_CV = geo_cv(value),
+    Median = median(value),
+    Min = min(value),
+    Max = max(value),
+    .groups = "drop"
+  ) |>
+  mutate(
+    across(c(Geo_Mean, Geo_CV), \(x) if_else(Parameter %in% geo_params, x, NA_real_)),
+    across(c(Mean, SD, CV), \(x) if_else(Parameter == "Tmax", NA_real_, x)),
+    Key = as.character(Parameter),
+    Parameter = unname(param_html[Key])
+  )
+
+nca_summary |>
+  select(-Key) |>
+  gt() |>
+  tab_header(
+    title = "Table 3. Summary Statistics for NCA Parameters",
+    subtitle = "N = 12"
+  ) |>
+  fmt_number(columns = c(Mean, SD, Geo_Mean, Median, Min, Max), decimals = 3) |>
+  fmt_number(columns = c(CV, Geo_CV), decimals = 1) |>
+  sub_missing(missing_text = "") |>
+  fmt_markdown(columns = Parameter) |>
+  cols_label(CV = "CV%", Geo_Mean = "Geo. Mean", Geo_CV = "Geo. CV%") |>
+  cols_align(align = "center", columns = -Parameter) |>
+  tab_source_note(
+    source_note = "Geometric statistics are shown for parameters that are usually log-normally distributed. Tmax is summarized by median and range only."
+  )
+```
+
+```{r nca-summary-values}
+#| include: false
+nca_stat <- \(param, stat) nca_summary[[stat]][nca_summary$Key == param]
+
+n_cmax_10_20 <- sum(nca_results$Cmax >= 10 & nca_results$Cmax <= 20)
+n_cmax_5_15 <- sum(nca_results$Cmax >= 5 & nca_results$Cmax <= 15)
+flag_extrap <- nca_results |> filter(Flag_Extrap)
+near_extrap <- nca_results |> filter(Pct_Extrap > 15, !Flag_Extrap)
+
+outliers <- nca_results |>
+  select(ID, Half_life, CL_F, Vd_F) |>
+  pivot_longer(-ID, names_to = "Parameter", values_to = "Value") |>
+  group_by(Parameter) |>
+  filter(iqr_outlier(Value)) |>
+  ungroup()
+
+outlier_text <- if (nrow(outliers) == 0) {
+  "No subject was an outlier (more than 1.5 times the IQR beyond the quartiles) for t~1/2~, CL/F, or V~z~/F."
+} else {
+  outliers |>
+    mutate(label = recode(Parameter, Half_life = "t~1/2~", CL_F = "CL/F", Vd_F = "V~z~/F")) |>
+    group_by(ID) |>
+    summarise(txt = sprintf("Subject %s (%s)", first(ID), paste(label, collapse = ", ")), .groups = "drop") |>
+    pull(txt) |>
+    paste(collapse = "; ") |>
+    sprintf(fmt = "Outliers (more than 1.5 times the IQR beyond the quartiles): %s.")
+}
+
+half_life_others <- nca_results |> filter(!ID %in% flag_extrap$ID) |> pull(Half_life)
+```
+
+::: callout-tip
+## Interpretation of NCA Parameters
+
+**Maximum Concentration (C~max~):** The geometric mean C~max~ was **`r sprintf("%.1f", nca_stat("Cmax", "Geo_Mean"))` mg/L** (geometric CV `r sprintf("%.1f", nca_stat("Cmax", "Geo_CV"))`%), with individual values from `r sprintf("%.1f", min(nca_results$Cmax))` to `r sprintf("%.1f", max(nca_results$Cmax))` mg/L. The mean is below the traditional 10 to 20 mg/L therapeutic range; `r n_cmax_10_20` of 12 subjects reached that range, and `r n_cmax_5_15` of 12 had C~max~ within the 5 to 15 mg/L range used in many current references. A single dose is not expected to reach steady-state concentrations.
+
+**Time to Peak (T~max~):** Median T~max~ was **`r sprintf("%.2f", nca_stat("Tmax", "Median"))` hours** (range `r sprintf("%.2f", min(nca_results$Tmax))` to `r sprintf("%.2f", max(nca_results$Tmax))` hours).
+
+**Half-life (t~1/2~):** The mean terminal half-life was **`r sprintf("%.1f", nca_stat("Half_life", "Mean"))` hours** (range `r sprintf("%.1f", min(nca_results$Half_life))` to `r sprintf("%.1f", max(nca_results$Half_life))` hours).
+
+**Clearance (CL/F):** The geometric mean apparent clearance was **`r sprintf("%.2f", nca_stat("CL_F", "Geo_Mean"))` L/h** (geometric CV `r sprintf("%.1f", nca_stat("CL_F", "Geo_CV"))`%).
+
+**Volume (V~z~/F):** The geometric mean apparent terminal volume was **`r sprintf("%.1f", nca_stat("Vd_F", "Geo_Mean"))` L**.
+:::
+
+::: callout-warning
+## Subjects Requiring Attention
+
+`r if (nrow(flag_extrap) > 0) sprintf("AUC~%%extrap~ exceeded 20%% for %s %s (%s), so AUC~0-∞~, CL/F, V~z~/F, and MRT for %s should be interpreted with caution.", subject_word(flag_extrap$ID), list_ids(flag_extrap$ID), list_ids(sprintf("%.1f%%", flag_extrap$Pct_Extrap)), if (nrow(flag_extrap) == 1) "this subject" else "these subjects") else "AUC~%extrap~ was 20% or less for all subjects."` `r if (nrow(near_extrap) > 0) sprintf("%s %s %s close to the threshold (%s, respectively).", str_to_sentence(subject_word(near_extrap$ID)), list_ids(near_extrap$ID), if (nrow(near_extrap) == 1) "was" else "were", list_ids(sprintf("%.1f%%", near_extrap$Pct_Extrap))) else ""`
+
+`r outlier_text` Excluding `r subject_word(flag_extrap$ID)` `r list_ids(flag_extrap$ID)`, half-lives ranged from `r sprintf("%.1f", min(half_life_others))` to `r sprintf("%.1f", max(half_life_others))` hours.
+
+Setting the pre-dose concentrations to zero changed AUC~0-t~ by `r sprintf("%.1f", min(predose_impact$Pct_Change))`% to `r sprintf("%.1f", max(predose_impact$Pct_Change))`% in the `r nrow(predose_impact)` affected subjects.
+:::
+
+### Visualization of NCA Parameters
+
+```{r fig-nca-params}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-cap: "Figure 4. Distribution of Key NCA Parameters Across Subjects"
+
+nca_long <- nca_results |>
+  select(ID, Flag_Extrap, Cmax, Tmax, AUC_0_inf, Half_life, CL_F, Vd_F) |>
+  pivot_longer(-c(ID, Flag_Extrap), names_to = "Parameter", values_to = "Value") |>
+  mutate(
+    Parameter = factor(
+      Parameter,
+      levels = c("Cmax", "Tmax", "AUC_0_inf", "Half_life", "CL_F", "Vd_F"),
+      labels = c("Cmax (mg/L)", "Tmax (h)", "AUC0-inf (mg·h/L)", "Half-life (h)", "CL/F (L/h)", "Vz/F (L)")
+    )
+  )
+
+ggplot(nca_long, aes(x = Parameter, y = Value)) +
+  geom_boxplot(fill = pk_colors[1], alpha = 0.3, outlier.shape = NA) +
+  geom_jitter(aes(shape = Flag_Extrap), width = 0.2, size = 3.2, color = pk_colors[1], alpha = 0.8) +
+  scale_shape_manual(values = c(`FALSE` = 16, `TRUE` = 17), labels = c("≤ 20%", "> 20%"),
+                     name = "AUC %extrap") +
+  facet_wrap(~ Parameter, scales = "free", ncol = 3) +
+  labs(
+    x = NULL,
+    y = "Parameter Value",
+    title = "Distribution of NCA Parameters",
+    subtitle = "Each point represents one subject; boxplot shows median and IQR"
+  ) +
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(), legend.position = "bottom")
+```
+
+Figure 4 shows the distribution of the main NCA parameters. Subjects with AUC~%extrap~ above 20% are shown as triangles.
+
+## Individual One-Compartment Model {#sec-onecomp}
+
+### Model Implementation
+
+```{r model-functions}
+one_comp_model <- function(time, Ka, Ke, V, Dose) {
+  Dose * Ka / (V * (Ka - Ke)) * (exp(-Ke * time) - exp(-Ka * time))
+}
+
+two_comp_micro <- function(time, Ka, K10, K12, K21, Vc, Dose) {
+  sum_k <- K10 + K12 + K21
+  root <- sqrt(max(sum_k^2 - 4 * K10 * K21, 0))
+  alpha <- (sum_k + root) / 2
+  beta <- (sum_k - root) / 2
+
+  A <- Ka * (K21 - alpha) / ((Ka - alpha) * (beta - alpha))
+  B <- Ka * (K21 - beta) / ((Ka - beta) * (alpha - beta))
+
+  Dose / Vc * (A * exp(-alpha * time) + B * exp(-beta * time) - (A + B) * exp(-Ka * time))
+}
+
+# Fit from each set of starting values; keep the converged fit with the lowest RSS
+fit_multistart <- function(formula, data, starts) {
+  fits <- map(starts, \(s) tryCatch(
+    nls(formula, data = data, start = s, control = nls.control(maxiter = 500, warnOnly = TRUE)),
+    error = \(e) NULL,
+    warning = \(w) NULL
+  ))
+  fits <- keep(fits, \(f) !is.null(f) && isTRUE(f$convInfo$isConv))
+  if (length(fits) == 0) return(NULL)
+  fits[[which.min(map_dbl(fits, deviance))]]
+}
+
+fit_stats <- function(fit, data) {
+  if (is.null(fit)) {
+    return(tibble(Converged = FALSE, AIC = NA_real_, BIC = NA_real_, RMSE = NA_real_, R2 = NA_real_))
+  }
+  obs <- data$CONC
+  pred <- fitted(fit)
+  tibble(
+    Converged = TRUE,
+    AIC = AIC(fit),
+    BIC = BIC(fit),
+    RMSE = sqrt(mean((obs - pred)^2)),
+    R2 = 1 - sum((obs - pred)^2) / sum((obs - mean(obs))^2)
+  )
+}
+```
+
+```{r one-comp-model}
+fit_one_comp <- function(data) {
+  dose <- data$DOSE_mg[1]
+  nca <- calculate_nca(data)
+  model_data <- filter(data, TIME > 0)
+
+  starts <- expand_grid(
+    lKe = log(nca$Lambda_z),
+    lDelta = log(c(0.5, 1.5, 4)),
+    lV = log(nca$Vd_F)
+  ) |>
+    pmap(list)
+
+  fit <- fit_multistart(
+    CONC ~ one_comp_model(TIME, exp(lKe) + exp(lDelta), exp(lKe), exp(lV), dose),
+    model_data, starts
+  )
+
+  params <- if (is.null(fit)) {
+    tibble(Ka = NA_real_, Ke = NA_real_, V = NA_real_)
+  } else {
+    est <- coef(fit)
+    tibble(Ka = exp(est[["lKe"]]) + exp(est[["lDelta"]]), Ke = exp(est[["lKe"]]), V = exp(est[["lV"]]))
+  }
+
+  bind_cols(params, fit_stats(fit, model_data))
+}
+
+one_comp_results <- pk_data |>
+  group_by(ID) |>
+  group_modify(\(d, k) fit_one_comp(d)) |>
+  ungroup() |>
+  mutate(
+    Half_life = log(2) / Ke,
+    CL_F = Ke * V
+  )
+```
+
+### One-Compartment Model Results
+
+```{r table4-onecomp}
+one_comp_cols <- c("Ka", "Ke", "V", "Half_life", "CL_F", "R2", "RMSE")
+
+one_comp_results |>
+  filter(Converged) |>
+  select(ID, all_of(one_comp_cols)) |>
+  gt() |>
+  tab_header(
+    title = "Table 4. One-Compartment Model Parameter Estimates",
+    subtitle = "Individual nonlinear least squares fits"
+  ) |>
+  fmt_number(columns = c(Ka, Ke), decimals = 3) |>
+  fmt_number(columns = c(V, Half_life), decimals = 1) |>
+  fmt_number(columns = c(CL_F, RMSE), decimals = 2) |>
+  fmt_number(columns = R2, decimals = 4) |>
+  cols_label(.list = c(list(ID = "Subject"), html_labels(one_comp_cols))) |>
+  cols_align(align = "center", columns = -ID)
+```
+
+```{r onecomp-summary-values}
+#| include: false
+valid_1c <- one_comp_results |> filter(Converged)
+n_converged_1c <- nrow(valid_1c)
+n_r2_99_1c <- sum(valid_1c$R2 > 0.99)
+fast_ka <- valid_1c |> filter(Ka > 5)
+```
+
+The one-compartment model converged for **`r n_converged_1c` of 12** subjects.
+
+-   **Absorption (K~a~):** Median `r sprintf("%.2f", median(valid_1c$Ka))` h^-1^ (range `r sprintf("%.2f", min(valid_1c$Ka))` to `r sprintf("%.2f", max(valid_1c$Ka))`), corresponding to a median absorption half-life of `r sprintf("%.2f", log(2) / median(valid_1c$Ka))` hours. `r if (nrow(fast_ka) > 0) sprintf("%s %s had a K~a~ above 5 h^-1^; with the first post-dose sample at about 0.25 hours, absorption this fast is poorly determined.", str_to_sentence(subject_word(fast_ka$ID)), list_ids(fast_ka$ID)) else ""`
+-   **Elimination (K~e~):** Mean `r sprintf("%.3f", mean(valid_1c$Ke))` h^-1^, corresponding to a mean half-life of `r sprintf("%.1f", mean(valid_1c$Half_life))` hours
+-   **Volume (V/F):** Mean `r sprintf("%.1f", mean(valid_1c$V))` L
+-   **Fit:** R² ranged from `r sprintf("%.3f", min(valid_1c$R2))` to `r sprintf("%.3f", max(valid_1c$R2))` (above 0.99 in `r n_r2_99_1c` of `r n_converged_1c` subjects); RMSE ranged from `r sprintf("%.2f", min(valid_1c$RMSE))` to `r sprintf("%.2f", max(valid_1c$RMSE))` mg/L
+
+### One-Compartment Model Fits
+
+```{r fig-onecomp-fits}
+#| fig-width: 14
+#| fig-height: 10
+#| fig-cap: "Figure 5. One-Compartment Model Fits for All Subjects"
+
+time_pred <- seq(0, 25, by = 0.1)
+dose_by_id <- pk_data |> distinct(ID, DOSE_mg)
+
+one_comp_pred <- one_comp_results |>
+  filter(Converged) |>
+  left_join(dose_by_id, by = "ID") |>
+  mutate(pred_data = pmap(list(Ka, Ke, V, DOSE_mg), \(ka, ke, v, d) {
+    tibble(TIME = time_pred, PRED = one_comp_model(time_pred, ka, ke, v, d))
+  })) |>
+  select(ID, pred_data) |>
+  unnest(pred_data)
+
+ggplot() +
+  geom_line(data = one_comp_pred, aes(x = TIME, y = PRED), color = pk_colors[2], linewidth = 1.1) +
+  geom_point(data = pk_data, aes(x = TIME, y = CONC), color = pk_colors[1], size = 2.8) +
+  facet_wrap(~ ID, ncol = 4) +
+  labs(
+    x = "Time (hours)",
+    y = "Concentration (mg/L)",
+    title = "One-Compartment Model: Observed vs. Predicted",
+    subtitle = "Points = observed; lines = model predicted; pre-dose samples were not used in fitting"
+  ) +
+  theme(strip.text = element_text(face = "bold"))
+```
+
+Figure 5 overlays the one-compartment fits on the observed data. Departures from the fitted curves are examined with residual plots in [Residual Analysis](#sec-residuals).
+
+## Individual Two-Compartment Model {#sec-twocomp}
+
+```{r two-comp-model}
+fit_two_comp <- function(data) {
+  dose <- data$DOSE_mg[1]
+  model_data <- filter(data, TIME > 0)
+
+  starts <- expand_grid(
+    lKa = log(c(0.7, 1.5, 3)),
+    lK10 = log(0.1),
+    lK12 = log(c(0.1, 0.5, 1.5)),
+    lK21 = log(c(0.3, 1.5)),
+    lVc = log(c(15, 25))
+  ) |>
+    pmap(list)
+
+  fit <- fit_multistart(
+    CONC ~ two_comp_micro(TIME, exp(lKa), exp(lK10), exp(lK12), exp(lK21), exp(lVc), dose),
+    model_data, starts
+  )
+
+  params <- if (is.null(fit)) {
+    tibble(Ka = NA_real_, K10 = NA_real_, K12 = NA_real_, K21 = NA_real_, Vc = NA_real_, Max_SE_log = NA_real_)
+  } else {
+    est <- exp(coef(fit))
+    tibble(
+      Ka = est[["lKa"]], K10 = est[["lK10"]], K12 = est[["lK12"]], K21 = est[["lK21"]], Vc = est[["lVc"]],
+      Max_SE_log = tryCatch(max(summary(fit)$coefficients[, "Std. Error"]), error = \(e) Inf)
+    )
+  }
+
+  bind_cols(params, fit_stats(fit, model_data))
+}
+
+two_comp_results <- pk_data |>
+  group_by(ID) |>
+  group_modify(\(d, k) fit_two_comp(d)) |>
+  ungroup() |>
+  mutate(
+    Vp = Vc * K12 / K21,
+    Vss = Vc + Vp,
+    CL_F = K10 * Vc,
+    sum_k = K10 + K12 + K21,
+    beta = (sum_k - sqrt(sum_k^2 - 4 * K10 * K21)) / 2,
+    Half_life_beta = log(2) / beta
+  )
+```
+
+### Two-Compartment Model Results
+
+```{r twocomp-check}
+#| include: false
+valid_2c <- two_comp_results |> filter(Converged)
+n_converged_2c <- nrow(valid_2c)
+n_failed_2c <- 12 - n_converged_2c
+n_poorly_id_2c <- sum(valid_2c$Max_SE_log > 1)
+```
+
+Out of 36 sets of starting values per subject, the two-compartment model converged for **`r n_converged_2c` of 12** subjects and failed (false or singular convergence from every start) for `r n_failed_2c`. `r if (n_converged_2c > 0) sprintf("Of the converged fits, %d had at least one parameter with a standard error above 1 on the log scale (roughly a CV above 100%%), meaning the parameters are not well identified even where the optimizer converged.", n_poorly_id_2c) else ""`
+
+```{r table5-twocomp}
+two_comp_cols <- c("Ka", "K10", "K12", "K21", "Vc", "R2", "RMSE")
+
+if (n_converged_2c > 0) {
+  valid_2c |>
+    select(ID, all_of(two_comp_cols), Max_SE_log) |>
+    gt() |>
+    tab_header(
+      title = "Table 5. Two-Compartment Model Parameter Estimates",
+      subtitle = sprintf("Subjects with a converged fit (%d of 12)", n_converged_2c)
+    ) |>
+    fmt_number(columns = c(Ka, K10, K12, K21), decimals = 3) |>
+    fmt_number(columns = Vc, decimals = 1) |>
+    fmt_number(columns = c(RMSE, Max_SE_log), decimals = 2) |>
+    fmt_number(columns = R2, decimals = 4) |>
+    cols_label(.list = c(list(ID = "Subject", Max_SE_log = "Max. SE (log scale)"), html_labels(two_comp_cols))) |>
+    cols_align(align = "center", columns = -ID)
+}
+```
+
+```{r fig-twocomp-fits}
+#| fig-width: 8
+#| fig-height: 5
+#| fig-cap: "Figure 6. Two-Compartment Model Fits for Subjects with a Converged Fit"
+
+two_comp_pred <- valid_2c |>
+  left_join(dose_by_id, by = "ID") |>
+  mutate(pred_data = pmap(list(Ka, K10, K12, K21, Vc, DOSE_mg), \(ka, k10, k12, k21, vc, d) {
+    tibble(TIME = time_pred, PRED = two_comp_micro(time_pred, ka, k10, k12, k21, vc, d))
+  })) |>
+  select(ID, pred_data) |>
+  unnest(pred_data)
+
+if (n_converged_2c > 0) {
+  bind_rows(
+    one_comp_pred |> filter(ID %in% valid_2c$ID) |> mutate(Model = "1-Compartment"),
+    two_comp_pred |> mutate(Model = "2-Compartment")
+  ) |>
+    ggplot() +
+    geom_line(aes(x = TIME, y = PRED, color = Model, linetype = Model), linewidth = 1.1) +
+    geom_point(data = pk_data |> filter(ID %in% valid_2c$ID), aes(x = TIME, y = CONC), size = 2.8) +
+    scale_color_manual(values = c("1-Compartment" = pk_colors[2], "2-Compartment" = pk_colors[3])) +
+    facet_wrap(~ ID) +
+    labs(
+      x = "Time (hours)",
+      y = "Concentration (mg/L)",
+      title = "One- vs. Two-Compartment Fits",
+      subtitle = "Points = observed"
+    ) +
+    theme(legend.position = "bottom", strip.text = element_text(face = "bold"))
+}
+```
+
+## Model Comparison {#sec-model-comparison}
+
+### Statistical Comparison
+
+```{r table6-comparison}
+comparison <- one_comp_results |>
+  select(ID, AIC_1C = AIC, BIC_1C = BIC, R2_1C = R2) |>
+  left_join(
+    two_comp_results |> select(ID, Conv_2C = Converged, AIC_2C = AIC, BIC_2C = BIC, R2_2C = R2),
+    by = "ID"
+  ) |>
+  mutate(
+    Delta_AIC = AIC_2C - AIC_1C,
+    Delta_BIC = BIC_2C - BIC_1C,
+    Preferred = case_when(
+      !Conv_2C ~ "1-Compartment (2C not converged)",
+      Delta_AIC < -2 ~ "2-Compartment",
+      Delta_AIC > 2 ~ "1-Compartment",
+      TRUE ~ "Similar"
+    )
+  )
+
+comparison |>
+  select(ID, AIC_1C, AIC_2C, Delta_AIC, BIC_1C, BIC_2C, R2_1C, R2_2C, Preferred) |>
+  gt() |>
+  tab_header(
+    title = "Table 6. Model Comparison: One-Compartment vs. Two-Compartment",
+    subtitle = "NC = not converged; ΔAIC = AIC(2C) - AIC(1C), negative values favor 2C"
+  ) |>
+  fmt_number(columns = c(AIC_1C, AIC_2C, Delta_AIC, BIC_1C, BIC_2C), decimals = 1) |>
+  fmt_number(columns = c(R2_1C, R2_2C), decimals = 4) |>
+  sub_missing(columns = c(AIC_2C, BIC_2C, R2_2C, Delta_AIC), missing_text = "NC") |>
+  cols_label(
+    ID = "Subject",
+    AIC_1C = "AIC (1C)", AIC_2C = "AIC (2C)", Delta_AIC = "ΔAIC",
+    BIC_1C = "BIC (1C)", BIC_2C = "BIC (2C)",
+    R2_1C = html("R<sup>2</sup> (1C)"), R2_2C = html("R<sup>2</sup> (2C)")
+  ) |>
+  cols_align(align = "center", columns = -ID) |>
+  tab_source_note(source_note = "ΔAIC below -2 favors the two-compartment model; above 2 favors the one-compartment model.")
+```
+
+### Summary of Model Selection
+
+```{r table7-selection-summary}
+selection_levels <- c("1-Compartment", "2-Compartment", "Similar", "1-Compartment (2C not converged)")
+
+selection_summary <- comparison |>
+  count(Preferred) |>
+  right_join(tibble(Preferred = selection_levels), by = "Preferred") |>
+  mutate(
+    n = replace_na(n, 0L),
+    Preferred = factor(Preferred, levels = selection_levels),
+    Percentage = 100 * n / 12
+  ) |>
+  arrange(Preferred)
+
+selection_summary |>
+  mutate(Preferred = recode(
+    as.character(Preferred),
+    "1-Compartment" = "One-compartment preferred (ΔAIC > 2)",
+    "2-Compartment" = "Two-compartment preferred (ΔAIC < -2)",
+    "Similar" = "Models similar (|ΔAIC| ≤ 2)",
+    "1-Compartment (2C not converged)" = "Two-compartment did not converge"
+  )) |>
+  gt() |>
+  tab_header(title = "Table 7. Summary of Model Selection Results") |>
+  fmt_number(columns = Percentage, decimals = 1, pattern = "{x}%") |>
+  cols_label(Preferred = "Outcome", n = "N Subjects") |>
+  cols_align(align = "center", columns = -Preferred)
+```
+
+```{r comparison-summary}
+#| include: false
+n_sel <- \(lvl) selection_summary$n[selection_summary$Preferred == lvl]
+```
+
+::: callout-important
+## Key Finding: Model Selection
+
+The one-compartment model converged for `r n_converged_1c` of 12 subjects. The two-compartment model converged for only `r n_converged_2c` of 12 despite 36 starting points per subject. Among subjects where both models converged, the one-compartment model was preferred in `r n_sel("1-Compartment")`, the two-compartment model in `r n_sel("2-Compartment")`, and the models were similar in `r n_sel("Similar")`.
+
+With about 10 post-dose samples per subject and absorption overlapping any early distribution phase, the five-parameter two-compartment model is not identifiable from these data. This agrees with the semi-log plots (Figure 2), which show no clear biphasic decline. The one-compartment model was carried forward to the residual analysis and the population model.
+:::
+
+### Residual Analysis {#sec-residuals}
+
+```{r fig-residuals}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-cap: "Figure 7. Residual Plots for the Individual One-Compartment Fits"
+
+resid_1c <- fit_data |>
+  left_join(one_comp_results |> select(ID, Ka, Ke, V, Converged), by = "ID") |>
+  filter(Converged) |>
+  mutate(
+    PRED = one_comp_model(TIME, Ka, Ke, V, DOSE_mg),
+    RESIDUAL = CONC - PRED
+  )
+
+p_res1 <- ggplot(resid_1c, aes(x = PRED, y = RESIDUAL)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
+  geom_point(alpha = 0.6, color = pk_colors[1]) +
+  geom_smooth(method = "loess", se = FALSE, color = pk_colors[2]) +
+  labs(x = "Predicted Concentration (mg/L)", y = "Residual (mg/L)", title = "Residuals vs. Predicted")
+
+p_res2 <- ggplot(resid_1c, aes(x = TIME, y = RESIDUAL)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
+  geom_point(alpha = 0.6, color = pk_colors[1]) +
+  geom_smooth(method = "loess", se = FALSE, color = pk_colors[2]) +
+  labs(x = "Time (hours)", y = "Residual (mg/L)", title = "Residuals vs. Time")
+
+p_res3 <- ggplot(resid_1c, aes(x = CONC, y = PRED)) +
+  geom_abline(intercept = 0, slope = 1, linetype = "dashed", color = "gray50") +
+  geom_point(alpha = 0.6, color = pk_colors[1]) +
+  labs(x = "Observed Concentration (mg/L)", y = "Predicted Concentration (mg/L)", title = "Observed vs. Predicted")
+
+p_res4 <- ggplot(resid_1c, aes(sample = RESIDUAL)) +
+  stat_qq(color = pk_colors[1]) +
+  stat_qq_line(linetype = "dashed", color = "gray50") +
+  labs(x = "Theoretical Quantiles", y = "Sample Quantiles", title = "Q-Q Plot of Residuals")
+
+(p_res1 + p_res2) / (p_res3 + p_res4) +
+  plot_annotation(title = "One-Compartment Model Diagnostic Plots")
+```
+
+```{r residual-values}
+#| include: false
+resid_by_phase <- resid_1c |>
+  mutate(Phase = case_when(TIME < 1 ~ "early", TIME <= 5 ~ "peak", TRUE ~ "late")) |>
+  group_by(Phase) |>
+  summarise(mean_res = mean(RESIDUAL), n_pos = sum(RESIDUAL > 0), n = n(), .groups = "drop")
+rp <- \(phase, col) resid_by_phase[[col]][resid_by_phase$Phase == phase]
+shapiro_p <- shapiro.test(resid_1c$RESIDUAL)$p.value
+shapiro_txt <- if (shapiro_p < 0.001) "p < 0.001" else sprintf("p = %.3f", shapiro_p)
+```
+
+Figure 7 shows the residual diagnostics for the individual one-compartment fits. The mean residual was `r sprintf("%.2f", rp("early", "mean_res"))` mg/L before 1 hour (`r rp("early", "n_pos")` of `r rp("early", "n")` residuals positive), `r sprintf("%.2f", rp("peak", "mean_res"))` mg/L from 1 to 5 hours, and `r sprintf("%.2f", rp("late", "mean_res"))` mg/L after 5 hours. Residuals in the absorption phase are the most variable, which is expected given how quickly concentrations change over the first hour and the sensitivity of early predictions to K~a~. The Shapiro-Wilk test of the pooled residuals gave `r shapiro_txt`; the test has limited value with residuals pooled across individual fits, and the Q-Q plot should be read alongside it.
+
+## Population PK Model
+
+### Model Development {#sec-pop-dev}
+
+```{r pop-model}
+pop_data <- as.data.frame(fit_data)
+pop_start <- c(lKe = log(mean(nca_results$Lambda_z)), lKa = log(1.5), lCl = log(mean(nca_results$CL_F)))
+pop_control <- nlmeControl(maxIter = 200, pnlsMaxIter = 20, msMaxIter = 200)
+
+fit_pop_model <- function(random, weights = NULL) {
+  tryCatch(
+    nlme(
+      CONC ~ SSfol(DOSE_mg, TIME, lKe, lKa, lCl),
+      data = pop_data,
+      fixed = lKe + lKa + lCl ~ 1,
+      random = random,
+      weights = weights,
+      groups = ~ ID,
+      start = pop_start,
+      control = pop_control
+    ),
+    error = \(e) NULL
+  )
+}
+
+pop_candidates <- list(
+  "BSV on Ke, Ka, CL; additive error" = fit_pop_model(pdDiag(lKe + lKa + lCl ~ 1)),
+  "BSV on Ka, CL; additive error" = fit_pop_model(pdDiag(lKa + lCl ~ 1)),
+  "BSV on Ka, CL; power error" = fit_pop_model(pdDiag(lKa + lCl ~ 1), varPower()),
+  "BSV on Ka, CL; combined additive + proportional error" = fit_pop_model(pdDiag(lKa + lCl ~ 1), varConstProp())
+)
+
+pop_comparison <- imap(pop_candidates, \(fit, name) tibble(
+  Model = name,
+  Converged = !is.null(fit),
+  Parameters = if (is.null(fit)) NA_integer_ else attr(logLik(fit), "df"),
+  logLik = if (is.null(fit)) NA_real_ else as.numeric(logLik(fit)),
+  AIC = if (is.null(fit)) NA_real_ else AIC(fit),
+  BIC = if (is.null(fit)) NA_real_ else BIC(fit)
+)) |>
+  list_rbind() |>
+  mutate(Delta_AIC = AIC - min(AIC, na.rm = TRUE))
+
+selected_pop <- pop_comparison |>
+  filter(Converged, AIC <= min(AIC, na.rm = TRUE) + 2) |>
+  arrange(Parameters, AIC) |>
+  pull(Model) |>
+  first()
+fit_pop <- pop_candidates[[selected_pop]]
+```
+
+```{r table9-pop-comparison}
+pop_comparison |>
+  gt() |>
+  tab_header(
+    title = "Table 8. Population Model Candidates",
+    subtitle = "One-compartment model with first-order absorption; maximum likelihood"
+  ) |>
+  fmt_number(columns = c(logLik, AIC, BIC, Delta_AIC), decimals = 1) |>
+  sub_missing(missing_text = "Did not converge") |>
+  cols_label(Parameters = "N Parameters", logLik = "Log-likelihood", Delta_AIC = "ΔAIC") |>
+  cols_align(align = "center", columns = -Model) |>
+  tab_style(style = cell_text(weight = "bold"), locations = cells_body(rows = Model == selected_pop))
+```
+
+```{r pop-dev-values}
+#| include: false
+pop_aic <- \(name) pop_comparison$AIC[pop_comparison$Model == name]
+d_ke <- pop_aic("BSV on Ke, Ka, CL; additive error") - pop_aic("BSV on Ka, CL; additive error")
+d_power <- pop_aic("BSV on Ka, CL; power error") - pop_aic("BSV on Ka, CL; additive error")
+d_comb <- pop_aic("BSV on Ka, CL; combined additive + proportional error") - pop_aic("BSV on Ka, CL; additive error")
+fmt_d <- \(x) if (is.na(x)) "not estimable (the model did not converge)" else sprintf("%+.2f", x)
+```
+
+Adding a random effect on K~e~ changed AIC by `r fmt_d(d_ke)` relative to the model with BSV on K~a~ and CL/F only, so between-subject variability in K~e~ was not supported beyond what is captured through CL/F. Relative to additive error, the power error model changed AIC by `r fmt_d(d_power)` and the combined additive-proportional model by `r fmt_d(d_comb)`. Neither error model improved AIC by more than 2 units over additive error. The selected model was **`r selected_pop`**. `r if (str_detect(selected_pop, "additive error$")) "This supports the unweighted individual fits used in [Individual One-Compartment Model](#sec-onecomp) and [Individual Two-Compartment Model](#sec-twocomp)." else ""`
+
+### Parameter Estimates
+
+```{r table10-pop-params}
+fixed_ci <- intervals(fit_pop, which = "fixed")$fixed
+
+fixed_tbl <- tibble(
+  Parameter = c("K<sub>e</sub> (h<sup>-1</sup>)", "K<sub>a</sub> (h<sup>-1</sup>)", "CL/F (L/h)"),
+  term = rownames(fixed_ci),
+  Estimate = exp(fixed_ci[, "est."]),
+  Lower = exp(fixed_ci[, "lower"]),
+  Upper = exp(fixed_ci[, "upper"])
+) |>
+  select(-term)
+
+re_sd <- VarCorr(fit_pop)
+re_names <- setdiff(rownames(re_sd), "Residual")
+bsv_tbl <- tibble(
+  Parameter = paste0("BSV ", recode(re_names, lKe = "K<sub>e</sub>", lKa = "K<sub>a</sub>", lCl = "CL/F"), " (CV%)"),
+  Estimate = 100 * sqrt(exp(as.numeric(re_sd[re_names, "StdDev"])^2) - 1)
+)
+
+pop_typical <- exp(fixef(fit_pop))
+pop_half_life <- log(2) / pop_typical[["lKe"]]
+pop_v <- pop_typical[["lCl"]] / pop_typical[["lKe"]]
+
+derived_tbl <- tibble(
+  Parameter = c("t<sub>1/2</sub> (h), derived", "V/F (L), derived", "Residual SD (mg/L)"),
+  Estimate = c(pop_half_life, pop_v, fit_pop$sigma)
+)
+
+bind_rows(fixed_tbl, bsv_tbl, derived_tbl) |>
+  gt() |>
+  tab_header(
+    title = "Table 9. Population PK Parameter Estimates",
+    subtitle = selected_pop
+  ) |>
+  fmt_number(columns = c(Estimate, Lower, Upper), decimals = 3) |>
+  sub_missing(missing_text = "") |>
+  fmt_markdown(columns = Parameter) |>
+  cols_label(Lower = "95% CI Lower", Upper = "95% CI Upper") |>
+  cols_align(align = "center", columns = -Parameter) |>
+  tab_source_note(source_note = html("Typical values are back-transformed from the log scale. BSV CV% = 100 × √(exp(ω²) − 1). The residual SD applies to the additive component of the error model."))
+```
+
+```{r pop-values}
+#| include: false
+bsv_cl <- bsv_tbl$Estimate[str_detect(bsv_tbl$Parameter, "CL")]
+bsv_ka <- bsv_tbl$Estimate[str_detect(bsv_tbl$Parameter, "K<sub>a")]
+```
+
+The typical apparent clearance was **`r sprintf("%.2f", pop_typical[["lCl"]])` L/h** (95% CI `r sprintf("%.2f", fixed_tbl$Lower[3])` to `r sprintf("%.2f", fixed_tbl$Upper[3])`) with BSV of `r sprintf("%.0f", bsv_cl)`%. The typical absorption rate constant was `r sprintf("%.2f", pop_typical[["lKa"]])` h^-1^ with BSV of `r sprintf("%.0f", bsv_ka)`%. The typical elimination rate constant of `r sprintf("%.3f", pop_typical[["lKe"]])` h^-1^ corresponds to a half-life of `r sprintf("%.1f", pop_half_life)` hours and a typical V/F of `r sprintf("%.1f", pop_v)` L.
+
+### Population Model Fits and Diagnostics
+
+```{r fig-pop-fits}
+#| fig-width: 14
+#| fig-height: 10
+#| fig-cap: "Figure 8. Population Model Fits: Population (PRED) and Individual (IPRED) Predictions"
+
+pop_grid <- expand_grid(ID = levels(pk_data$ID), TIME = time_pred) |>
+  mutate(ID = factor(ID, levels = levels(pk_data$ID))) |>
+  left_join(dose_by_id, by = "ID") |>
+  as.data.frame()
+
+pop_grid_pred <- predict(fit_pop, newdata = pop_grid, level = 0:1) |>
+  as_tibble() |>
+  rename(PRED = predict.fixed, IPRED = predict.ID) |>
+  mutate(ID = factor(as.character(ID), levels = levels(pk_data$ID)), TIME = pop_grid$TIME) |>
+  pivot_longer(c(PRED, IPRED), names_to = "Prediction", values_to = "CONC")
+
+ggplot() +
+  geom_line(data = pop_grid_pred, aes(x = TIME, y = CONC, color = Prediction, linetype = Prediction),
+            linewidth = 1.1) +
+  geom_point(data = pk_data, aes(x = TIME, y = CONC), size = 2.8) +
+  scale_color_manual(values = c(IPRED = pk_colors[2], PRED = pk_colors[4])) +
+  scale_linetype_manual(values = c(IPRED = "solid", PRED = "dashed")) +
+  facet_wrap(~ ID, ncol = 4) +
+  labs(
+    x = "Time (hours)",
+    y = "Concentration (mg/L)",
+    title = "Population Model: Observed, PRED, and IPRED",
+    subtitle = "Points = observed; dashed = population prediction; solid = individual prediction"
+  ) +
+  theme(legend.position = "bottom", strip.text = element_text(face = "bold"))
+```
+
+```{r fig-pop-gof}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-cap: "Figure 9. Goodness-of-Fit Plots for the Population Model"
+
+pop_gof <- pop_data |>
+  as_tibble() |>
+  mutate(
+    PRED = fitted(fit_pop, level = 0),
+    IPRED = fitted(fit_pop, level = 1),
+    NRES = resid(fit_pop, type = "normalized")
+  )
+
+g1 <- ggplot(pop_gof, aes(x = PRED, y = CONC)) +
+  geom_abline(linetype = "dashed", color = "gray50") +
+  geom_point(alpha = 0.6, color = pk_colors[4]) +
+  geom_smooth(method = "loess", se = FALSE, color = pk_colors[1]) +
+  labs(x = "PRED (mg/L)", y = "Observed (mg/L)", title = "Observed vs. Population Predicted")
+
+g2 <- ggplot(pop_gof, aes(x = IPRED, y = CONC)) +
+  geom_abline(linetype = "dashed", color = "gray50") +
+  geom_point(alpha = 0.6, color = pk_colors[2]) +
+  geom_smooth(method = "loess", se = FALSE, color = pk_colors[1]) +
+  labs(x = "IPRED (mg/L)", y = "Observed (mg/L)", title = "Observed vs. Individual Predicted")
+
+g3 <- ggplot(pop_gof, aes(x = TIME, y = NRES)) +
+  geom_hline(yintercept = c(-2, 0, 2), linetype = c("dotted", "dashed", "dotted"), color = "gray50") +
+  geom_point(alpha = 0.6, color = pk_colors[3]) +
+  geom_smooth(method = "loess", se = FALSE, color = pk_colors[1]) +
+  labs(x = "Time (hours)", y = "Normalized Residual", title = "Normalized Residuals vs. Time")
+
+g4 <- ggplot(pop_gof, aes(x = PRED, y = NRES)) +
+  geom_hline(yintercept = c(-2, 0, 2), linetype = c("dotted", "dashed", "dotted"), color = "gray50") +
+  geom_point(alpha = 0.6, color = pk_colors[3]) +
+  geom_smooth(method = "loess", se = FALSE, color = pk_colors[1]) +
+  labs(x = "PRED (mg/L)", y = "Normalized Residual", title = "Normalized Residuals vs. PRED")
+
+(g1 + g2) / (g3 + g4)
+```
+
+```{r pop-gof-values}
+#| include: false
+n_nres_out <- sum(abs(pop_gof$NRES) > 2)
+```
+
+`r n_nres_out` of `r nrow(pop_gof)` normalized residuals (`r sprintf("%.1f", 100 * n_nres_out / nrow(pop_gof))`%) fell outside ±2. Figure 8 shows that individual predictions follow the observed profiles closely, while the population prediction describes the typical subject.
+
+## Parameter Comparison Across Methods
+
+```{r table11-param-comparison}
+geo_mean <- \(x) exp(mean(log(x), na.rm = TRUE))
+
+method_comparison <- tibble(
+  Parameter = c("t<sub>1/2</sub> (h)", "CL/F (L/h)", "V/F (L)"),
+  NCA = c(mean(nca_results$Half_life), geo_mean(nca_results$CL_F), geo_mean(nca_results$Vd_F)),
+  One_Comp = c(mean(valid_1c$Half_life), geo_mean(valid_1c$CL_F), geo_mean(valid_1c$V)),
+  Population = c(pop_half_life, pop_typical[["lCl"]], pop_v)
+)
+
+method_comparison |>
+  gt() |>
+  tab_header(
+    title = "Table 10. Comparison of PK Parameters Across Methods",
+    subtitle = "NCA and individual fits: mean (t1/2) or geometric mean (CL/F, V/F) across 12 subjects; population: typical value"
+  ) |>
+  fmt_number(columns = -Parameter, decimals = 2) |>
+  fmt_markdown(columns = Parameter) |>
+  cols_label(NCA = "NCA", One_Comp = "Individual 1-Compartment", Population = "Population Model") |>
+  cols_align(align = "center", columns = -Parameter) |>
+  tab_source_note(source_note = html("NCA volume is V<sub>z</sub>/F; compartmental volumes are V/F."))
+```
+
+```{r comparison-values}
+#| include: false
+cl_pct_diff <- 100 * (method_comparison$Population[2] - method_comparison$NCA[2]) / method_comparison$NCA[2]
+```
+
+The methods give similar estimates of the main parameters (Table 10). The population typical CL/F differs from the NCA geometric mean by `r sprintf("%.1f", cl_pct_diff)`%. Agreement between NCA, which assumes no structural model, and the compartmental estimates supports the one-compartment description.
+
+# Discussion
+
+## Summary of Findings
+
+### Non-Compartmental Analysis
+
+The mean terminal half-life was `r sprintf("%.1f", nca_stat("Half_life", "Mean"))` hours, and the geometric mean CL/F and V~z~/F were `r sprintf("%.2f", nca_stat("CL_F", "Geo_Mean"))` L/h and `r sprintf("%.1f", nca_stat("Vd_F", "Geo_Mean"))` L. `r if (nrow(flag_extrap) > 0) sprintf("%s %s had a long apparent half-life and more than 20%% of AUC~0-∞~ extrapolated, so the 24-hour sampling period did not cover enough of the terminal phase.", str_to_sentence(subject_word(flag_extrap$ID)), list_ids(flag_extrap$ID)) else ""`
+
+Between-subject variability in clearance (geometric CV `r sprintf("%.0f", nca_stat("CL_F", "Geo_CV"))`% by NCA; BSV `r sprintf("%.0f", bsv_cl)`% in the population model) is clinically relevant. Theophylline is metabolized mainly by CYP1A2, with a smaller contribution from CYP2E1 and CYP3A4. CYP1A2 activity varies with smoking, diet, and interacting drugs, which is one reason therapeutic drug monitoring is used.
+
+### Compartmental Modeling
+
+The one-compartment model with first-order absorption converged for `r n_converged_1c` of 12 subjects and described the data well. The two-compartment model converged for `r n_converged_2c` of 12 and did not improve the fit where it converged. Likely reasons:
+
+1.  **Sampling schedule:** About 10 post-dose samples per subject, with few in the period where a distribution phase would appear
+2.  **Absorption overlap:** With oral dosing, absorption can mask a short distribution phase
+3.  **Identifiability:** Five structural parameters cannot be estimated reliably from about 10 observations per subject
+
+The population model estimated typical parameters and between-subject variability directly. BSV in K~e~ was not supported once BSV in CL/F was included, and the data did not support a proportional error component.
+
+## Clinical Relevance
+
+**Dosing interval:** With a typical half-life of about `r sprintf("%.0f", pop_half_life)` hours, immediate-release theophylline needs several doses per day to keep concentrations within the target range. Sustained-release formulations are used to allow once- or twice-daily dosing.
+
+**Loading dose:** Loading Dose = V/F × Target Concentration.
+
+**Maintenance dose:** Maintenance Dose Rate = CL/F × Target Average Steady-State Concentration.
+
+**Individualization:** The variability in clearance supports therapeutic drug monitoring, given the narrow therapeutic index.
+
+### Comparison with Literature Values
+
+| Parameter | This Study (NCA) | This Study (Population) | Literature Range |
+|----|----|----|----|
+| Half-life (h) | `r sprintf("%.1f", nca_stat("Half_life", "Mean"))` | `r sprintf("%.1f", pop_half_life)` | 6 to 10 |
+| CL/F (L/h) | `r sprintf("%.2f", nca_stat("CL_F", "Geo_Mean"))` | `r sprintf("%.2f", pop_typical[["lCl"]])` | 2 to 5 |
+| V/F (L) | `r sprintf("%.1f", nca_stat("Vd_F", "Geo_Mean"))` | `r sprintf("%.1f", pop_v)` | 25 to 45 |
+
+The estimates fall within the ranges reported for theophylline in non-smoking adults.
+
+## Methodological Considerations
+
+-   **NCA** gives model-independent estimates and is the standard for bioavailability and bioequivalence assessment.
+-   **Individual compartmental fits** (the two-stage approach) are simple but rely on enough data per subject; here this was adequate for the one-compartment model and not for the two-compartment model.
+-   **Population modeling** uses all subjects together, separates between-subject variability from residual error, and is the natural basis for simulating alternative dosing regimens.
+
+### Limitations
+
+1.  **Sample size:** Twelve subjects give imprecise estimates of between-subject variability.
+2.  **Population:** Results may not apply to smokers, older adults, or patients with hepatic impairment, heart failure, or interacting medications.
+3.  **Single dose:** Steady-state pharmacokinetics were not evaluated.
+4.  **Sampling duration:** For subjects with slower elimination, 24 hours did not capture enough of the terminal phase (AUC~%extrap~ above 20%).
+5.  **Pre-dose concentrations:** Three subjects had measurable pre-dose concentrations of unknown origin.
+6.  **Covariates:** Doses were weight-based and the dataset contains few covariates, so covariate effects were not evaluated.
+
+## Future Directions
+
+-   **Covariate modeling** in a larger dataset (weight, age, smoking status, hepatic function)
+-   **Simulation** of multiple-dose regimens from the population model to compare dosing strategies against the target range
+-   **Visual predictive checks** to evaluate the population model's predictive performance
+
+# Conclusions
+
+::: callout-important
+## Key Conclusions
+
+1.  **NCA:** Mean terminal half-life was `r sprintf("%.1f", nca_stat("Half_life", "Mean"))` hours and geometric mean CL/F was `r sprintf("%.2f", nca_stat("CL_F", "Geo_Mean"))` L/h. `r if (nrow(flag_extrap) > 0) sprintf("AUC~0-∞~ for %s %s relied on more than 20%% extrapolation.", subject_word(flag_extrap$ID), list_ids(flag_extrap$ID)) else ""`
+
+2.  **Structural model:** The one-compartment model with first-order absorption describes these data. The two-compartment model converged for only `r n_converged_2c` of 12 subjects and is not identifiable with this sampling design.
+
+3.  **Population model:** The selected model (`r selected_pop`) gave a typical CL/F of `r sprintf("%.2f", pop_typical[["lCl"]])` L/h with `r sprintf("%.0f", bsv_cl)`% between-subject variability.
+
+4.  **Consistency:** NCA, individual compartmental, and population estimates agree with each other and with published theophylline values.
+
+5.  **Clinical implications:** Variability in clearance and the narrow therapeutic range support therapeutic drug monitoring.
+:::
